@@ -47,4 +47,10 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
+    implementation(project(":Snake and Apple"))
+    implementation(project(":Catch that pig"))
+    implementation(project(":Go Ski"))
+    implementation(project(":Matching Game"))
+    implementation(project(":Cess Bomb"))
+
 }
