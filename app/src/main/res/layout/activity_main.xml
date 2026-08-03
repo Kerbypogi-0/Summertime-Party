@@ -22,4 +22,23 @@
         android:layout_height="wrap_content"
         android:text="Test Catch That Pig" />
 
+    <Button
+        android:id="@+id/btnGoSki"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Go SKi" />
+
+    <Button
+        android:id="@+id/btnCessBomb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Cess Bomb" />
+
+    <Button
+        android:id="@+id/btnMatchingGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test Matching Game" />
+
+
 </LinearLayout>
