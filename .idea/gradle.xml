@@ -8,6 +8,11 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/Catch that pig" />
+            <option value="$PROJECT_DIR$/Cess Bomb" />
+            <option value="$PROJECT_DIR$/Go Ski" />
+            <option value="$PROJECT_DIR$/Matching Game" />
+            <option value="$PROJECT_DIR$/Snake and Apple" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

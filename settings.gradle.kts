@@ -24,3 +24,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Summertime Party"
 include(":app")
+include(":Snake and Apple")
+include(":Catch that pig")
+include(":Go Ski")
+include(":Matching Game")
+include(":Cess Bomb")
