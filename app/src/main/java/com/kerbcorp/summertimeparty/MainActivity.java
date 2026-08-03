@@ -1,29 +1,36 @@
 package com.kerbcorp.summertimeparty;
 
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.androidgamesdk.GameActivity;
+// Import the specific game activities your team created
+import com.kerbcorp.snakeandapple.SnakeAndAppleActivity;
+import com.kerbcorp.catchthatpig.CatchThatPigActivity;
+import com.kerbcorp.goski.GoSkiActivity;
+import com.kerbcorp.cessbomb.CessBombActivity;
+import com.kerbcorp.matchinggame.MatchingGameActivity;
 
-public class MainActivity extends GameActivity {
-    static {
-        System.loadLibrary("summertimeparty");
-    }
+public class MainActivity extends AppCompatActivity {
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        if (hasFocus) {
-            hideSystemUi();
-        }
-    }
+        // Setup Snake Button
+        Button btnSnake = findViewById(R.id.btnSnake);
+        btnSnake.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SnakeAndAppleActivity.class);
+            startActivity(intent);
+        });
 
-    private void hideSystemUi() {
-        WindowInsetsController insetsController = getWindow().getInsetsController();
-        if (insetsController != null) {
-            insetsController.hide(WindowInsets.Type.systemBars());
-            insetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-        }
+        // Setup Pig Button
+        Button btnPig = findViewById(R.id.btnPig);
+        btnPig.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CatchThatPigActivity.class);
+            startActivity(intent);
+        });
     }
 }
