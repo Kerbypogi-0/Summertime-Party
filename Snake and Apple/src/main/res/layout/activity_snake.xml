@@ -1,28 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#121212">
+
+    <!-- Top Controller (Player B: Apple) -->
+    <LinearLayout
+        android:id="@+id/topController"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnAppleUp"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="UP"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnAppleLeft"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:text="LEFT"/>
+            <Space
+                android:layout_width="80dp"
+                android:layout_height="60dp"/>
+            <Button
+                android:id="@+id/btnAppleRight"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:text="RIGHT"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAppleDown"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:text="DOWN"/>
+    </LinearLayout>
 
     <!-- The Background Game Engine -->
     <com.kerbcorp.snakeandapple.GameView
         android:id="@+id/gameView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomController"
+        android:layout_below="@+id/topController" />
 
-    <!-- The Control Buttons (Anchored to the bottom) -->
+    <!-- Bottom Controller (Player A: Snake) -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/bottomController"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical"
         android:gravity="center">
 
         <Button
             android:id="@+id/btnUp"
             android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:text="UP"/>
 
         <LinearLayout
@@ -32,22 +77,22 @@
             <Button
                 android:id="@+id/btnLeft"
                 android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                 android:text="LEFT"/>
             <Space
                 android:layout_width="80dp"
-                android:layout_height="80dp"/>
+                android:layout_height="60dp"/>
             <Button
                 android:id="@+id/btnRight"
                 android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                 android:text="RIGHT"/>
         </LinearLayout>
 
         <Button
             android:id="@+id/btnDown"
             android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:text="DOWN"/>
     </LinearLayout>
 </RelativeLayout>
