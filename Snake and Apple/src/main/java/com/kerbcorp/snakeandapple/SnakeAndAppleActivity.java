@@ -11,6 +11,17 @@ public class SnakeAndAppleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 1. Hide the top header (Action Bar)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        // 2. Hide the status bar (battery, clock) for a true full-screen experience
+        getWindow().setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
         setContentView(R.layout.activity_snake);
 
         gameView = findViewById(R.id.gameView);
@@ -36,6 +47,22 @@ public class SnakeAndAppleActivity extends AppCompatActivity {
         btnAppleDown.setOnClickListener(v -> gameView.moveApple(GameView.Direction.DOWN));
         btnAppleLeft.setOnClickListener(v -> gameView.moveApple(GameView.Direction.LEFT));
         btnAppleRight.setOnClickListener(v -> gameView.moveApple(GameView.Direction.RIGHT));
+
+        // --- Game Over Menu Controls ---
+        android.widget.LinearLayout gameOverMenu = findViewById(R.id.gameOverMenu);
+        Button btnRestart = findViewById(R.id.btnRestart);
+        Button btnHome = findViewById(R.id.btnHome);
+
+        // What happens when they click Play Again
+        btnRestart.setOnClickListener(v -> {
+            gameOverMenu.setVisibility(android.view.View.GONE); // Hide the menu
+            gameView.resetGame(); // Restart the engine
+        });
+
+        // What happens when they click Quit
+        btnHome.setOnClickListener(v -> {
+            finish(); // This instantly closes the game and dumps you back to your Main App Hub!
+        });
     }
 
     @Override

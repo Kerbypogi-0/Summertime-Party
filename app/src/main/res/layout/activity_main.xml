@@ -4,41 +4,71 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="20dp"
     android:background="#121212">
 
-    <!-- Button for Game 1 -->
-    <Button
-        android:id="@+id/btnSnake"
-        android:layout_width="match_parent"
+    <!-- Row 1: Snake & Pig -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Snake and Apple"
-        android:layout_marginBottom="10dp"/>
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
 
-    <!-- Button for Game 2 -->
-    <Button
-        android:id="@+id/btnPig"
-        android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnSnake"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Snake\n&amp;\nApple"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="20dp" />
+
+        <Button
+            android:id="@+id/btnPig"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Catch\nThat\nPig"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Row 2: Go Ski & Cess Bomb -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Catch That Pig" />
+        android:orientation="horizontal"
+        android:layout_marginBottom="20dp">
 
-    <Button
-        android:id="@+id/btnGoSki"
-        android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btnGoSki"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Go Ski"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="20dp" />
+
+        <Button
+            android:id="@+id/btnCessBomb"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Cess\nBomb"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Row 3: Matching Game (Centered at the bottom) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Go SKi" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnCessBomb"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Test Cess Bomb" />
-
-    <Button
-        android:id="@+id/btnMatchingGame"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Test Matching Game" />
-
+        <Button
+            android:id="@+id/btnMatching"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:text="Matching\nGame"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </LinearLayout>

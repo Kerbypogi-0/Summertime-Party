@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Button btnMatchingGame = findViewById(R.id.btnMatchingGame);
+        Button btnMatchingGame = findViewById(R.id.btnMatching);
         btnPig.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, MatchingGameActivity.class);
             startActivity(intent);

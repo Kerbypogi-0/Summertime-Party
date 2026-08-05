@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212">
+    android:background="#2C2C2C">
 
     <!-- Top Controller (Player B: Apple) -->
     <LinearLayout
@@ -94,5 +94,40 @@
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:text="DOWN"/>
+    </LinearLayout>
+
+    <!-- Game Over Menu Overlay (Hidden by default) -->
+    <LinearLayout
+        android:id="@+id/gameOverMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#DD000000"
+        android:padding="30dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TIMEOUT!"
+            android:textColor="#FF5252"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/btnRestart"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Play Again" />
+
+        <Button
+            android:id="@+id/btnHome"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Quit to Home" />
     </LinearLayout>
 </RelativeLayout>
