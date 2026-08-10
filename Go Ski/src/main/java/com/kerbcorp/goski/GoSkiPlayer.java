@@ -21,10 +21,8 @@ public class GoSkiPlayer {
 
         tapCount++;
 
-        // Move forward every time the player taps.
         progress += 0.015f;
 
-        // Finish when the jet ski reaches the end.
         if (progress >= 1.0f) {
             progress = 1.0f;
             finished = true;
