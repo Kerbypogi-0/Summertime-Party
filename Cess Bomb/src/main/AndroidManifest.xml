@@ -3,7 +3,6 @@
 
     <application>
 
-        <!-- Add this line so the main app can launch this game -->
         <activity
             android:name=".CessBombActivity"
             android:exported="true">

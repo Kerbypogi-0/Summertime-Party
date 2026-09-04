@@ -2,22 +2,22 @@ package com.kerbcorp.cessbomb;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Hosts a single Cess Bomb play session. Launched by the Summertime
- * Party hub app (see the manifest entry noted in AndroidManifest.xml).
- * All scene/question data and animation logic live in GameView; this
- * activity only owns the HUD and the end-of-game dialog.
+ * Hosts a Cess Bomb play session: difficulty pick -> trivia rounds -> score.
+ * All question/round logic lives in GameView; this activity owns the
+ * difficulty selector, HUD, and the end-of-game dialog.
  */
 public class CessBombActivity extends AppCompatActivity implements GameView.Listener {
 
-    private TextView tvStage;
-    private TextView tvLives;
-    private TextView tvQuestion;
-    private TextView tvFeedback;
+    private View hudRow;
+    private View difficultySelector;
+    private TextView tvStage, tvLives, tvScore, tvQuestion, tvFeedback;
     private GameView gameView;
 
     @Override
@@ -25,49 +25,77 @@ public class CessBombActivity extends AppCompatActivity implements GameView.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cess_bomb);
 
+        hudRow = findViewById(R.id.hudRow);
+        difficultySelector = findViewById(R.id.difficultySelector);
         tvStage = findViewById(R.id.tvStage);
         tvLives = findViewById(R.id.tvLives);
+        tvScore = findViewById(R.id.tvScore);
         tvQuestion = findViewById(R.id.tvQuestion);
         tvFeedback = findViewById(R.id.tvFeedback);
         gameView = findViewById(R.id.gameView);
 
         gameView.setListener(this);
-        gameView.post(this::startGame);
+
+        Button btnEasy = findViewById(R.id.btnEasy);
+        Button btnMedium = findViewById(R.id.btnMedium);
+        Button btnHard = findViewById(R.id.btnHard);
+
+        btnEasy.setOnClickListener(v -> beginGame(GameView.Difficulty.EASY));
+        btnMedium.setOnClickListener(v -> beginGame(GameView.Difficulty.MEDIUM));
+        btnHard.setOnClickListener(v -> beginGame(GameView.Difficulty.HARD));
     }
 
-    private void startGame() {
-        gameView.startNewGame();
-        refreshHud();
+    private void beginGame(GameView.Difficulty difficulty) {
+        difficultySelector.setVisibility(View.GONE);
+        hudRow.setVisibility(View.VISIBLE);
+        tvQuestion.setVisibility(View.VISIBLE);
+        tvFeedback.setVisibility(View.VISIBLE);
+        gameView.setVisibility(View.VISIBLE);
+
+        gameView.post(() -> {
+            gameView.startNewGame(difficulty);
+            refreshHud();
+        });
+    }
+
+    private void showDifficultySelector() {
+        difficultySelector.setVisibility(View.VISIBLE);
+        hudRow.setVisibility(View.GONE);
+        tvQuestion.setVisibility(View.GONE);
+        tvFeedback.setVisibility(View.GONE);
+        gameView.setVisibility(View.GONE);
     }
 
     private void refreshHud() {
-        tvStage.setText("Stage " + gameView.currentStageNumber());
+        tvStage.setText("Stage " + gameView.currentStageNumber() + "/" + gameView.totalStages());
         tvLives.setText("Lives: " + gameView.livesRemaining());
+        tvScore.setText("Score: " + gameView.currentScore());
         tvQuestion.setText(gameView.currentQuestion());
         tvFeedback.setText("");
     }
 
     @Override
-    public void onAnswer(boolean correct, int livesRemaining) {
+    public void onAnswer(boolean correct, int livesRemaining, int score) {
         tvLives.setText("Lives: " + livesRemaining);
+        tvScore.setText("Score: " + score);
         tvFeedback.setText(correct ? "Nice find!" : "BOOM!");
-        // GameView advances or reloads internally after its short delay;
-        // refresh the rest of the HUD once that settles.
         tvFeedback.postDelayed(this::refreshHud, correct ? 700 : 600);
     }
 
     @Override
-    public void onGameOver(boolean cleared, int stageReached) {
-        String message = cleared
-                ? "You cleared every stage! Summer champion!"
-                : "You reached Stage " + stageReached;
+    public void onGameOver(boolean cleared, int stageReached, int score, int totalStages) {
+        String message = (cleared
+                ? "You cleared every stage!"
+                : "You reached Stage " + stageReached + " of " + totalStages)
+                + "\nFinal score: " + score + "/" + totalStages;
 
         new AlertDialog.Builder(this)
                 .setTitle("Game over")
                 .setMessage(message)
                 .setCancelable(false)
-                .setPositiveButton("Play again", (dialog, which) -> startGame())
-                .setNegativeButton("Back to hub", (dialog, which) -> finish())
+                .setPositiveButton("Play again", (d, w) -> beginGame(gameView.currentDifficulty()))
+                .setNegativeButton("Change difficulty", (d, w) -> showDifficultySelector())
+                .setNeutralButton("Back to hub", (d, w) -> finish())
                 .show();
     }
 }

@@ -6,11 +6,13 @@
     android:background="#FFC93C">
 
     <LinearLayout
+        android:id="@+id/hudRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvStage"
@@ -18,15 +20,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="#26333F" />
+
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="#2EC4B6" />
 
         <TextView
             android:id="@+id/tvLives"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="#E63946" />
     </LinearLayout>
 
@@ -38,24 +49,80 @@
         android:paddingRight="16dp"
         android:paddingBottom="12dp"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="19sp"
         android:textStyle="bold"
-        android:textColor="#26333F" />
+        android:textColor="#26333F"
+        android:visibility="gone" />
 
-    <com.kerbcorp.cessbomb.GameView
-        android:id="@+id/gameView"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <com.kerbcorp.cessbomb.GameView
+            android:id="@+id/gameView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/difficultySelector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp">
+            
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="200dp"
+                android:text="Choose your Difficulty"
+                android:textColor="#26333F"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnEasy"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:backgroundTint="#2EC4B6"
+                android:text="EASY"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/btnMedium"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:text="MEDIUM"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#FFA500" />
+
+            <Button
+                android:id="@+id/btnHard"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:text="HARD"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#E63946" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/tvFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="16dp"
-        android:textSize="18sp"
+        android:padding="14dp"
+        android:textSize="17sp"
         android:textStyle="bold"
-        android:textColor="#FF4500" />
+        android:textColor="#FF4500"
+        android:visibility="gone" />
 
 </LinearLayout>

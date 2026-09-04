@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button btnCessBomb = findViewById(R.id.btnCessBomb);
-        btnPig.setOnClickListener(v -> {
+        btnCessBomb.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CessBombActivity.class);
             startActivity(intent);
         });
