@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Setup Pig Button
         Button btnPig = findViewById(R.id.btnPig);
-        btnPig.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CatchThatPigActivity.class);
+        btnPig.setOnClickListener(view -> {
+            // This Intent jumps from the Main Menu to your Catch That Pig screen
+            Intent intent = new Intent(MainActivity.this, com.kerbcorp.catchthatpig.CatchThatPigActivity.class);
             startActivity(intent);
         });
 

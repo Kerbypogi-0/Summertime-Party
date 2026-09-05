@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222222"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Bold Arcade Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="CATCH THAT PIG"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <!-- Black-styled Player Selection Box -->
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:background="#000000"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT PLAYERS"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"/>
+
+            <RadioGroup
+                android:id="@+id/playerSelectGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/btn1Player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1 Player (vs 3 AI)"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:buttonTint="#FFFFFF"
+                    android:checked="true"/>
+
+                <RadioButton
+                    android:id="@+id/btn2Player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2 Players (Red &amp; Green)"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:buttonTint="#FFFFFF"/>
+
+                <RadioButton
+                    android:id="@+id/btn3Player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="3 Players"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:buttonTint="#FFFFFF"/>
+
+                <RadioButton
+                    android:id="@+id/btn4Player"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="4 Players"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:buttonTint="#FFFFFF"/>
+            </RadioGroup>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnStartGame"
+            android:layout_width="300dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#000000"
+            android:text="PLAY"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+</ScrollView>
