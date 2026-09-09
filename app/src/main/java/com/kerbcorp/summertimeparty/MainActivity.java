@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
-// Import the specific game activities your team created
 import com.kerbcorp.snakeandapple.SnakeAndAppleActivity;
 import com.kerbcorp.catchthatpig.CatchThatPigActivity;
 import com.kerbcorp.goski.GoSkiActivity;
@@ -19,23 +18,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Setup Snake Button
         Button btnSnake = findViewById(R.id.btnSnake);
         btnSnake.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, SnakeAndAppleActivity.class);
             startActivity(intent);
         });
 
-        // Setup Pig Button
         Button btnPig = findViewById(R.id.btnPig);
-        btnPig.setOnClickListener(view -> {
-            // This Intent jumps from the Main Menu to your Catch That Pig screen
-            Intent intent = new Intent(MainActivity.this, com.kerbcorp.catchthatpig.CatchThatPigActivity.class);
+        btnPig.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CatchThatPigActivity.class);
             startActivity(intent);
         });
 
         Button btnGoSki = findViewById(R.id.btnGoSki);
-        btnPig.setOnClickListener(v -> {
+        btnGoSki.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GoSkiActivity.class);
             startActivity(intent);
         });
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button btnMatchingGame = findViewById(R.id.btnMatching);
-        btnPig.setOnClickListener(v -> {
+        btnMatchingGame.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, MatchingGameActivity.class);
             startActivity(intent);
         });
