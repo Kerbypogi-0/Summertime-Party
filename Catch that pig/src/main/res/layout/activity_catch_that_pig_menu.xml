@@ -5,7 +5,10 @@
     android:background="#222222"
     android:fillViewport="true">
 
+
     <LinearLayout
+        xmlns:tools="[http://schemas.android.com/tools](http://schemas.android.com/tools)"
+        tools:ignore="HardcodedText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -53,7 +56,8 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:buttonTint="#FFFFFF"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:minHeight="48dp"/>
 
                 <RadioButton
                     android:id="@+id/btn2Player"
@@ -62,7 +66,8 @@
                     android:text="2 Players (Red &amp; Green)"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
-                    android:buttonTint="#FFFFFF"/>
+                    android:buttonTint="#FFFFFF"
+                    android:minHeight="48dp"/>
 
                 <RadioButton
                     android:id="@+id/btn3Player"
@@ -71,7 +76,8 @@
                     android:text="3 Players"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
-                    android:buttonTint="#FFFFFF"/>
+                    android:buttonTint="#FFFFFF"
+                    android:minHeight="48dp"/>
 
                 <RadioButton
                     android:id="@+id/btn4Player"
@@ -80,7 +86,8 @@
                     android:text="4 Players"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
-                    android:buttonTint="#FFFFFF"/>
+                    android:buttonTint="#FFFFFF"
+                    android:minHeight="48dp"/>
             </RadioGroup>
         </LinearLayout>
 
