@@ -14,27 +14,101 @@ import androidx.appcompat.app.AppCompatActivity;
 public class GoSkiActivity extends AppCompatActivity {
 
     private GameView gameView;
+    private FrameLayout mainLayout;
 
-    private Button player1Button;
-    private Button player2Button;
-    private Button player3Button;
-    private Button player4Button;
+    private Button[] playerButtons;
+    private Button playAgainButton;
+    private Button backToMenuButton;
+    private LinearLayout postRaceRow;
 
     private TextView countdownText;
+
+    private int numPlayers = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Create the main screen
-        FrameLayout mainLayout = new FrameLayout(this);
+        showPlayerSelectScreen();
+    }
 
-        // Create the game
-        gameView = new GameView(this);
+    private void showPlayerSelectScreen() {
+
+        FrameLayout selectLayout = new FrameLayout(this);
+
+        selectLayout.setBackgroundColor(Color.rgb(50, 180, 220));
+
+        LinearLayout buttonColumn = new LinearLayout(this);
+
+        buttonColumn.setOrientation(LinearLayout.VERTICAL);
+        buttonColumn.setGravity(Gravity.CENTER);
+
+        TextView title = new TextView(this);
+
+        title.setText("GO SKI");
+        title.setTextSize(50);
+        title.setTextColor(Color.WHITE);
+        title.setGravity(Gravity.CENTER);
+        title.setPadding(0, 0, 0, 80);
+
+        buttonColumn.addView(title);
+
+        Button twoPlayerButton = new Button(this);
+
+        twoPlayerButton.setText("2 PLAYERS");
+        twoPlayerButton.setTextSize(22);
+
+        Button fourPlayerButton = new Button(this);
+
+        fourPlayerButton.setText("4 PLAYERS");
+        fourPlayerButton.setTextSize(22);
+
+        LinearLayout.LayoutParams btnParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        btnParams.setMargins(80, 20, 80, 20);
+
+        buttonColumn.addView(twoPlayerButton, btnParams);
+        buttonColumn.addView(fourPlayerButton, btnParams);
+
+        FrameLayout.LayoutParams columnParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        columnParams.gravity = Gravity.CENTER;
+
+        selectLayout.addView(buttonColumn, columnParams);
+
+        setContentView(selectLayout);
+
+        twoPlayerButton.setOnClickListener(v -> {
+            numPlayers = 2;
+            startGameScreen();
+        });
+
+        fourPlayerButton.setOnClickListener(v -> {
+            numPlayers = 4;
+            startGameScreen();
+        });
+    }
+
+    private void startGameScreen() {
+
+        mainLayout = new FrameLayout(this);
+
+        gameView = new GameView(this, numPlayers);
+
+        gameView.setOnRaceFinishedListener(winner -> {
+            showPostRaceButtons();
+        });
 
         mainLayout.addView(gameView);
 
-        // Countdown text
         countdownText = new TextView(this);
 
         countdownText.setText("3");
@@ -48,30 +122,29 @@ public class GoSkiActivity extends AppCompatActivity {
                         FrameLayout.LayoutParams.MATCH_PARENT
                 );
 
-        mainLayout.addView(
-                countdownText,
-                countdownParams
-        );
+        mainLayout.addView(countdownText, countdownParams);
 
-        // Bottom button layout
         LinearLayout buttonLayout = new LinearLayout(this);
 
-        buttonLayout.setOrientation(
-                LinearLayout.HORIZONTAL
-        );
-
+        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
         buttonLayout.setGravity(Gravity.CENTER);
 
-        // Player buttons
-        player1Button = createButton("P1\nTAP");
-        player2Button = createButton("P2\nTAP");
-        player3Button = createButton("P3\nTAP");
-        player4Button = createButton("P4\nTAP");
+        playerButtons = new Button[numPlayers];
 
-        buttonLayout.addView(player1Button);
-        buttonLayout.addView(player2Button);
-        buttonLayout.addView(player3Button);
-        buttonLayout.addView(player4Button);
+        for (int i = 0; i < numPlayers; i++) {
+
+            final int playerNumber = i + 1;
+
+            Button button = createButton("P" + playerNumber + "\nTAP");
+
+            playerButtons[i] = button;
+
+            buttonLayout.addView(button);
+
+            button.setOnClickListener(v -> {
+                gameView.playerTap(playerNumber);
+            });
+        }
 
         FrameLayout.LayoutParams buttonParams =
                 new FrameLayout.LayoutParams(
@@ -81,39 +154,68 @@ public class GoSkiActivity extends AppCompatActivity {
 
         buttonParams.gravity = Gravity.BOTTOM;
 
-        mainLayout.addView(
-                buttonLayout,
-                buttonParams
-        );
+        mainLayout.addView(buttonLayout, buttonParams);
 
-        // Set the screen
+        postRaceRow = new LinearLayout(this);
+
+        postRaceRow.setOrientation(LinearLayout.HORIZONTAL);
+        postRaceRow.setGravity(Gravity.CENTER);
+        postRaceRow.setVisibility(android.view.View.GONE);
+
+        playAgainButton = new Button(this);
+        playAgainButton.setText("PLAY AGAIN");
+        playAgainButton.setTextSize(20);
+
+        backToMenuButton = new Button(this);
+        backToMenuButton.setText("MAIN MENU");
+        backToMenuButton.setTextSize(20);
+
+        LinearLayout.LayoutParams postRaceBtnParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        postRaceBtnParams.setMargins(20, 0, 20, 0);
+
+        postRaceRow.addView(playAgainButton, postRaceBtnParams);
+        postRaceRow.addView(backToMenuButton, postRaceBtnParams);
+
+        FrameLayout.LayoutParams postRaceRowParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        postRaceRowParams.gravity = Gravity.CENTER;
+        postRaceRowParams.topMargin = 250;
+
+        mainLayout.addView(postRaceRow, postRaceRowParams);
+
+        playAgainButton.setOnClickListener(v -> {
+            postRaceRow.setVisibility(android.view.View.GONE);
+            gameView.resetRace();
+            setButtonsEnabled(false);
+            startCountdown();
+        });
+
+        backToMenuButton.setOnClickListener(v -> {
+            postRaceRow.setVisibility(android.view.View.GONE);
+            showPlayerSelectScreen();
+        });
+
         setContentView(mainLayout);
 
-        // Disable buttons before GO
         setButtonsEnabled(false);
 
-        // Player 1
-        player1Button.setOnClickListener(v -> {
-            gameView.playerTap(1);
-        });
-
-        // Player 2
-        player2Button.setOnClickListener(v -> {
-            gameView.playerTap(2);
-        });
-
-        // Player 3
-        player3Button.setOnClickListener(v -> {
-            gameView.playerTap(3);
-        });
-
-        // Player 4
-        player4Button.setOnClickListener(v -> {
-            gameView.playerTap(4);
-        });
-
-        // Start countdown
         startCountdown();
+    }
+
+    private void showPostRaceButtons() {
+
+        setButtonsEnabled(false);
+
+        postRaceRow.setVisibility(android.view.View.VISIBLE);
     }
 
     private Button createButton(String text) {
@@ -138,48 +240,33 @@ public class GoSkiActivity extends AppCompatActivity {
 
     private void setButtonsEnabled(boolean enabled) {
 
-        player1Button.setEnabled(enabled);
-        player2Button.setEnabled(enabled);
-        player3Button.setEnabled(enabled);
-        player4Button.setEnabled(enabled);
+        for (Button button : playerButtons) {
+            button.setEnabled(enabled);
+        }
     }
 
     private void startCountdown() {
 
         Handler handler = new Handler();
 
-        // 3
         countdownText.setText("3");
 
         handler.postDelayed(() -> {
-
             countdownText.setText("2");
-
         }, 1000);
 
-        // 1
         handler.postDelayed(() -> {
-
             countdownText.setText("1");
-
         }, 2000);
 
-        // GO
         handler.postDelayed(() -> {
-
             countdownText.setText("GO!");
-
             gameView.startRace();
-
             setButtonsEnabled(true);
-
         }, 3000);
 
-        // Remove GO text
         handler.postDelayed(() -> {
-
             countdownText.setText("");
-
         }, 3700);
     }
 }
