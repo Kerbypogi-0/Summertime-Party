@@ -3,6 +3,7 @@ package com.kerbcorp.catchthatpig;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Window; // Make sure this is imported
 import android.widget.Button;
 import android.widget.RadioGroup;
 
@@ -10,9 +11,11 @@ public class CatchThatPigActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 👇 This strips away the purple Action Bar 👇
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
-        // 👇 FORCE FULLSCREEN & HIDE NOTIFICATION BAR 👇
+        // Force Fullscreen & Hide Navigation Bar
         getWindow().getDecorView().setSystemUiVisibility(
                 android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -20,8 +23,8 @@ public class CatchThatPigActivity extends Activity {
                         | android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        // 👆 ---------------------------------------- 👆
 
+        // Ensure this perfectly matches your XML file name
         setContentView(R.layout.activity_catch_that_pig_menu);
 
         Button btnStartGame = findViewById(R.id.btnStartGame);
