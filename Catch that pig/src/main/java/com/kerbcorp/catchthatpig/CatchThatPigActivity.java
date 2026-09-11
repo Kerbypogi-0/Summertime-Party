@@ -17,6 +17,9 @@ public class CatchThatPigActivity extends androidx.appcompat.app.AppCompatActivi
         // Strip away the default Action Bar
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // 1. MODERN FULLSCREEN LOGIC (Fixes the first 7 warnings)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
