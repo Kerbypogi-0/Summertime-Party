@@ -1,6 +1,7 @@
 package com.kerbcorp.goski;
 
 import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.graphics.Color;
@@ -25,6 +26,8 @@ public class GoSkiActivity extends AppCompatActivity {
     private TextView countdownText;
 
     private int numPlayers = 4;
+
+    private MediaPlayer bgmPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,9 +114,12 @@ public class GoSkiActivity extends AppCompatActivity {
 
         mainLayout = new FrameLayout(this);
 
+        startBgm();
+
         gameView = new GameView(this, numPlayers);
 
         gameView.setOnRaceFinishedListener(winner -> {
+            fadeOutBgm();
             showPostRaceButtons();
         });
 
@@ -218,11 +224,13 @@ public class GoSkiActivity extends AppCompatActivity {
             postRaceRow.setVisibility(android.view.View.GONE);
             gameView.resetRace();
             setButtonsEnabled(false);
+            startBgm();
             startCountdown();
         });
 
         backToMenuButton.setOnClickListener(v -> {
             postRaceRow.setVisibility(android.view.View.GONE);
+            stopBgm();
             showPlayerSelectScreen();
         });
 
@@ -281,5 +289,133 @@ public class GoSkiActivity extends AppCompatActivity {
         handler.postDelayed(() -> {
             countdownText.setText("");
         }, 3700);
+    }
+
+    private void startBgm() {
+
+        if (bgmPlayer == null) {
+            bgmPlayer = MediaPlayer.create(this, R.raw.go_ski_bgm);
+
+            if (bgmPlayer != null) {
+                bgmPlayer.setLooping(true);
+            }
+        }
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.setVolume(0f, 0f);
+            bgmPlayer.start();
+            fadeInBgm();
+        }
+    }
+
+    private void fadeInBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 0f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] += 1f / steps;
+
+                if (volume[0] >= 1f) {
+                    bgmPlayer.setVolume(1f, 1f);
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    private void stopBgm() {
+
+        if (bgmPlayer != null) {
+            bgmPlayer.stop();
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
+    }
+
+    private void fadeOutBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 1f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] -= 1f / steps;
+
+                if (volume[0] <= 0f) {
+                    stopBgm();
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (bgmPlayer != null && bgmPlayer.isPlaying()) {
+            bgmPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (bgmPlayer != null) {
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
     }
 }
