@@ -1,5 +1,6 @@
 package com.kerbcorp.goski;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.graphics.Color;
@@ -29,6 +30,8 @@ public class GoSkiActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         showPlayerSelectScreen();
     }
 
@@ -43,15 +46,22 @@ public class GoSkiActivity extends AppCompatActivity {
         buttonColumn.setOrientation(LinearLayout.VERTICAL);
         buttonColumn.setGravity(Gravity.CENTER);
 
-        TextView title = new TextView(this);
+        android.widget.ImageView logoImage = new android.widget.ImageView(this);
 
-        title.setText("GO SKI");
-        title.setTextSize(50);
-        title.setTextColor(Color.WHITE);
-        title.setGravity(Gravity.CENTER);
-        title.setPadding(0, 0, 0, 80);
+        logoImage.setImageResource(R.drawable.go_ski_logo);
 
-        buttonColumn.addView(title);
+        LinearLayout.LayoutParams logoParams =
+                new LinearLayout.LayoutParams(
+                        600,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        logoParams.gravity = Gravity.CENTER;
+        logoParams.bottomMargin = 60;
+
+        logoImage.setAdjustViewBounds(true);
+
+        buttonColumn.addView(logoImage, logoParams);
 
         Button twoPlayerButton = new Button(this);
 
@@ -124,10 +134,23 @@ public class GoSkiActivity extends AppCompatActivity {
 
         mainLayout.addView(countdownText, countdownParams);
 
-        LinearLayout buttonLayout = new LinearLayout(this);
+        int margin = 30;
 
-        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-        buttonLayout.setGravity(Gravity.CENTER);
+        int[] gravities;
+
+        if (numPlayers == 2) {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        } else {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.TOP | Gravity.END,
+                    Gravity.BOTTOM | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        }
 
         playerButtons = new Button[numPlayers];
 
@@ -139,22 +162,21 @@ public class GoSkiActivity extends AppCompatActivity {
 
             playerButtons[i] = button;
 
-            buttonLayout.addView(button);
+            FrameLayout.LayoutParams cornerParams =
+                    new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            cornerParams.gravity = gravities[i];
+            cornerParams.setMargins(margin, margin, margin, margin);
+
+            mainLayout.addView(button, cornerParams);
 
             button.setOnClickListener(v -> {
                 gameView.playerTap(playerNumber);
             });
         }
-
-        FrameLayout.LayoutParams buttonParams =
-                new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        140
-                );
-
-        buttonParams.gravity = Gravity.BOTTOM;
-
-        mainLayout.addView(buttonLayout, buttonParams);
 
         postRaceRow = new LinearLayout(this);
 
@@ -225,15 +247,6 @@ public class GoSkiActivity extends AppCompatActivity {
         button.setText(text);
         button.setTextSize(18);
         button.setTextColor(Color.BLACK);
-
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                );
-
-        button.setLayoutParams(params);
 
         return button;
     }

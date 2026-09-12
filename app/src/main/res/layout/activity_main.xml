@@ -42,10 +42,9 @@
             android:id="@+id/btnGoSki"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:text="Go Ski"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginEnd="20dp" />
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/go_ski_logo"
+            app:backgroundTint="@null" />
 
         <Button
             android:id="@+id/btnCessBomb"

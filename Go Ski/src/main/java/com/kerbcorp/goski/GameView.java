@@ -103,10 +103,6 @@ public class GameView extends View {
         drawTrackOverlay(canvas);
         drawPlayers(canvas);
 
-        if (!raceStarted && logoBitmap != null) {
-            drawLogo(canvas);
-        }
-
         if (raceFinished) {
             updateConfetti();
             drawWinner(canvas, winner);
@@ -116,42 +112,33 @@ public class GameView extends View {
 
     private void drawTrackOverlay(Canvas canvas) {
 
-        float laneHeight = getHeight() / (numPlayers + 1f);
-
-        paint.setColor(Color.argb(120, 255, 255, 255));
-        paint.setStrokeWidth(4);
-
-        for (int i = 1; i < numPlayers; i++) {
-            float y = i * laneHeight;
-            canvas.drawLine(0, y, getWidth(), y, paint);
-        }
-
-        float finishX = getWidth() - 100;
-
-        paint.setColor(Color.BLACK);
-        paint.setStrokeWidth(8);
-
-        canvas.drawLine(finishX, 0, finishX, getHeight(), paint);
-
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(25);
-        paint.setTextAlign(Paint.Align.CENTER);
-
-        canvas.drawText("FINISH", finishX, 35, paint);
+        // The track image already includes lane dividers and a FINISH flag,
+        // so we no longer draw our own overlay lines here.
     }
 
     private void drawPlayers(Canvas canvas) {
 
-        float laneHeight = getHeight() / (numPlayers + 1f);
+        float waterTop = getHeight() * 0.32f;
+        float waterBottom = getHeight() * 0.94f;
+        float waterHeight = waterBottom - waterTop;
 
-        int spriteHeight = (int) (laneHeight * 0.7f);
+        float laneHeight = waterHeight / numPlayers;
+
+        float sizeFactor = (numPlayers >= 4) ? 0.55f : 0.7f;
+
+        int spriteHeight = (int) (laneHeight * sizeFactor);
+
+        int startX = 190;
+
+        // Calibrate this to where the FINISH flag graphic sits in your track image
+        float finishX = getWidth() * 0.88f;
 
         for (int i = 0; i < numPlayers; i++) {
 
             GoSkiPlayer player = players[i];
 
-            float x = 70 + player.getProgress() * (getWidth() - 190);
-            float y = i * laneHeight + laneHeight / 2f;
+            float x = startX + player.getProgress() * (finishX - startX);
+            float y = waterTop + i * laneHeight + laneHeight / 2f;
 
             drawJetSki(canvas, x, y, playerBitmaps[i], spriteHeight);
 
@@ -162,7 +149,7 @@ public class GameView extends View {
             canvas.drawText(
                     "P" + player.getPlayerNumber() + ": " + player.getTapCount() + " taps",
                     10,
-                    i * laneHeight + 25,
+                    waterTop + i * laneHeight + 20,
                     paint
             );
         }
