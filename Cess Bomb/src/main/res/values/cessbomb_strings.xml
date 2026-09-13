@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cessbomb_title">💣 CessBomb</string>
+    <string name="cessbomb_intro_instructions">The summer party is about to explode! Defuse CessBomb before time runs out!</string>
+    <string name="cessbomb_choose_difficulty">Choose your difficulty</string>
+    <string name="cessbomb_difficulty_easy">Easy</string>
+    <string name="cessbomb_difficulty_normal">Normal</string>
+    <string name="cessbomb_difficulty_hard">Hard</string>
+    <string name="cessbomb_play_button">PLAY CESSBOMB</string>
+    <string name="cessbomb_back_to_party">Back to Summer Party</string>
+
+    <string name="cessbomb_time_left_format">TIME LEFT: %1$d s</string>
+    <string name="cessbomb_score_format">SCORE: %1$d</string>
+    <string name="cessbomb_challenge_progress_format">Challenge %1$d / %2$d</string>
+    <string name="cessbomb_best_score_format">Best score: %1$d</string>
+    <string name="cessbomb_new_best_score_format">🎉 New best score: %1$d!</string>
+
+    <string name="cessbomb_summer_code">Summer Code</string>
+    <string name="cessbomb_enter_a_number">Enter a number</string>
+    <string name="cessbomb_submit">SUBMIT</string>
+    <string name="cessbomb_clear">CLEAR</string>
+
+    <string name="cessbomb_correct">Correct! 🎉</string>
+    <string name="cessbomb_wrong">Wrong! -50 points</string>
+
+    <string name="cessbomb_ready_to_defuse">CESSBOMB READY TO DEFUSE</string>
+    <string name="cessbomb_defuse">DEFUSE</string>
+
+    <string name="cessbomb_win_banner">🎉 CESSBOMB DEFUSED!</string>
+    <string name="cessbomb_win_subtitle">You saved the SUMMERTIME PARTY!</string>
+    <string name="cessbomb_lose_banner">💥 PARTY OVER!</string>
+    <string name="cessbomb_lose_subtitle">The bomb went off. Try again!</string>
+
+    <string name="cessbomb_play_again">PLAY AGAIN</string>
+</resources>
