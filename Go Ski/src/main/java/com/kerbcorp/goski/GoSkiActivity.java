@@ -35,6 +35,10 @@ public class GoSkiActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         showPlayerSelectScreen();
     }
 
