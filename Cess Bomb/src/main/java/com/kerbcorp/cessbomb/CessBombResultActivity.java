@@ -12,10 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.Random;
 
-/**
- * Shows the outcome of a CessBomb match: win/lose banner, score summary,
- * and buttons to replay or return to the SUMMERTIME PARTY main menu.
- */
+
 public class CessBombResultActivity extends AppCompatActivity {
 
     public static final String EXTRA_WIN = "cessbomb_extra_win";
@@ -81,13 +78,14 @@ public class CessBombResultActivity extends AppCompatActivity {
         // Clears CessBomb's activity stack (intro + game) and returns to whatever
         // launched CessBomb: the SUMMERTIME PARTY main menu.
         backToPartyButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CessBombIntroActivity.class);
+            Intent intent = new Intent(this, CessBombActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             finish();
         });
     }
 
-    /** Lightweight confetti effect: a handful of emoji falling with rotation. */
+
     private void spawnConfetti(ViewGroup container) {
         if (container == null) return;
         String[] pieces = {"🎉", "🎊", "✨", "🥥", "🍹"};

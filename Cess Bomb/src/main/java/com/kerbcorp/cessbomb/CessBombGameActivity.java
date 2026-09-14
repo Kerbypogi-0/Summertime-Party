@@ -19,11 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Core gameplay Activity for CessBomb.
- * Runs a single countdown timer for the whole match, presents a queue of
- * randomized challenges, then a final defusal step.
- */
+
 public class CessBombGameActivity extends AppCompatActivity {
 
     public static final String EXTRA_DIFFICULTY = "cessbomb_extra_difficulty";

@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Builds a randomized queue of challenges for a single CessBomb game session.
- * Avoids two identical challenge types in a row so the game feels varied.
- */
+
 public class ChallengeManager {
 
     private final List<Challenge> queue = new ArrayList<>();

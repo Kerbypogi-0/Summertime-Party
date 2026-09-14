@@ -140,7 +140,8 @@
                 android:id="@+id/inputCodeAnswer"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberSigned"
+                android:inputType="number"
+                android:digits="0123456789"
                 android:gravity="center"
                 android:background="#FFFFFF"
                 android:layout_marginBottom="16dp" />
