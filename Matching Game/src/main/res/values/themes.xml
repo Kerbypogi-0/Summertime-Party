@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Extends the MaterialComponents theme (required for MaterialButton),
+         but swaps the default white windowBackground for the same navy
+         used in the app icon, so there's no white flash while the app
+         is starting up. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+    </style>
+
+</resources>

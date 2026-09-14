@@ -1,6 +1,7 @@
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.android.application)
 }
+
 
 android {
     namespace = "com.kerbcorp.matchinggame"
@@ -9,10 +10,11 @@ android {
     }
 
     defaultConfig {
+        applicationId = "com.kerbcorp.matchinggame"
         minSdk = 30
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
