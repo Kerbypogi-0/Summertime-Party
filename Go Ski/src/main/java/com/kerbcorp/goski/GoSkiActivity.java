@@ -66,15 +66,13 @@ public class GoSkiActivity extends AppCompatActivity {
 
         buttonColumn.addView(logoImage, logoParams);
 
-        Button twoPlayerButton = new Button(this);
-
-        twoPlayerButton.setText("2 PLAYERS");
+        Button twoPlayerButton = createButton("2 PLAYERS", Color.rgb(255, 140, 60));
         twoPlayerButton.setTextSize(22);
+        twoPlayerButton.setMinHeight(120);
 
-        Button fourPlayerButton = new Button(this);
-
-        fourPlayerButton.setText("4 PLAYERS");
+        Button fourPlayerButton = createButton("4 PLAYERS", Color.rgb(60, 170, 200));
         fourPlayerButton.setTextSize(22);
+        fourPlayerButton.setMinHeight(120);
 
         LinearLayout.LayoutParams btnParams =
                 new LinearLayout.LayoutParams(
@@ -140,7 +138,7 @@ public class GoSkiActivity extends AppCompatActivity {
 
         mainLayout.addView(countdownText, countdownParams);
 
-        int margin = 30;
+        int margin = 20;
 
         int[] gravities;
 
@@ -158,13 +156,20 @@ public class GoSkiActivity extends AppCompatActivity {
             };
         }
 
+        int[] playerColors = {
+                Color.rgb(230, 60, 60),
+                Color.rgb(60, 120, 230),
+                Color.rgb(70, 180, 90),
+                Color.rgb(230, 190, 40)
+        };
+
         playerButtons = new Button[numPlayers];
 
         for (int i = 0; i < numPlayers; i++) {
 
             final int playerNumber = i + 1;
 
-            Button button = createButton("P" + playerNumber + "\nTAP");
+            Button button = createButton("P" + playerNumber + "\nTAP", playerColors[i]);
 
             playerButtons[i] = button;
 
@@ -190,13 +195,11 @@ public class GoSkiActivity extends AppCompatActivity {
         postRaceRow.setGravity(Gravity.CENTER);
         postRaceRow.setVisibility(android.view.View.GONE);
 
-        playAgainButton = new Button(this);
-        playAgainButton.setText("PLAY AGAIN");
-        playAgainButton.setTextSize(20);
+        playAgainButton = createButton("PLAY AGAIN", Color.rgb(70, 180, 90));
+        playAgainButton.setTextSize(18);
 
-        backToMenuButton = new Button(this);
-        backToMenuButton.setText("MAIN MENU");
-        backToMenuButton.setTextSize(20);
+        backToMenuButton = createButton("MAIN MENU", Color.rgb(150, 90, 200));
+        backToMenuButton.setTextSize(18);
 
         LinearLayout.LayoutParams postRaceBtnParams =
                 new LinearLayout.LayoutParams(
@@ -248,15 +251,50 @@ public class GoSkiActivity extends AppCompatActivity {
         postRaceRow.setVisibility(android.view.View.VISIBLE);
     }
 
-    private Button createButton(String text) {
+    private Button createButton(String text, int color) {
 
         Button button = new Button(this);
 
         button.setText(text);
-        button.setTextSize(18);
-        button.setTextColor(Color.BLACK);
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setTypeface(button.getTypeface(), android.graphics.Typeface.BOLD);
+
+        android.graphics.drawable.GradientDrawable shape =
+                new android.graphics.drawable.GradientDrawable();
+
+        shape.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(26f);
+        shape.setColor(color);
+        shape.setStroke(6, darkenColor(color, 0.6f));
+        shape.setAlpha(230);
+
+        button.setBackground(shape);
+
+        button.setMinWidth(130);
+        button.setMinHeight(110);
+
+        button.setPadding(10, 10, 10, 10);
+
+        button.setElevation(8f);
 
         return button;
+    }
+
+    private int darkenColor(int color, float factor) {
+
+        int a = Color.alpha(color);
+        int r = Math.round(Color.red(color) * factor);
+        int g = Math.round(Color.green(color) * factor);
+        int b = Math.round(Color.blue(color) * factor);
+
+        return Color.argb(
+                a,
+                Math.min(r, 255),
+                Math.min(g, 255),
+                Math.min(b, 255)
+        );
     }
 
     private void setButtonsEnabled(boolean enabled) {

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -42,6 +43,13 @@ public class GameView extends View {
             Color.rgb(90, 200, 130),
             Color.rgb(90, 160, 255),
             Color.rgb(200, 120, 255)
+    };
+
+    private int[] playerFallbackColors = {
+            Color.rgb(230, 60, 60),
+            Color.rgb(60, 120, 230),
+            Color.rgb(70, 180, 90),
+            Color.rgb(230, 190, 40)
     };
 
     public interface OnRaceFinishedListener {
@@ -86,6 +94,12 @@ public class GameView extends View {
                 BitmapFactory.decodeResource(getResources(), R.drawable.player3_green),
                 BitmapFactory.decodeResource(getResources(), R.drawable.player4_yellow)
         };
+
+        for (int i = 0; i < playerBitmaps.length; i++) {
+            if (playerBitmaps[i] == null) {
+                Log.e("GoSki", "Player " + (i + 1) + " bitmap failed to load — check the drawable filename/format.");
+            }
+        }
     }
 
     @Override
@@ -118,17 +132,29 @@ public class GameView extends View {
 
     private void drawPlayers(Canvas canvas) {
 
-        float waterTop = getHeight() * 0.32f;
-        float waterBottom = getHeight() * 0.94f;
+        float waterTop = getHeight() * 0.34f;
+        float waterBottom = getHeight() * 0.90f;
         float waterHeight = waterBottom - waterTop;
 
-        float laneHeight = waterHeight / numPlayers;
+        // The track art always has 4 painted lanes, so keep lane height fixed
+        // regardless of player count, and just choose which lanes are used.
+        float laneHeight = waterHeight / 4f;
 
-        float sizeFactor = (numPlayers >= 4) ? 0.55f : 0.7f;
+        int[] laneRows;
+
+        if (numPlayers == 2) {
+            // Use the middle two lanes so 2-player mode lines up with real stripes
+            laneRows = new int[] { 1, 2 };
+        } else {
+            laneRows = new int[] { 0, 1, 2, 3 };
+        }
+
+        float sizeFactor = (numPlayers == 2) ? 1.3f : 0.85f;
 
         int spriteHeight = (int) (laneHeight * sizeFactor);
 
-        int startX = 190;
+        // Proportional to width so this clears the dock artwork on any screen size
+        float startX = getWidth() * 0.17f;
 
         // Calibrate this to where the FINISH flag graphic sits in your track image
         float finishX = getWidth() * 0.88f;
@@ -137,10 +163,12 @@ public class GameView extends View {
 
             GoSkiPlayer player = players[i];
 
-            float x = startX + player.getProgress() * (finishX - startX);
-            float y = waterTop + i * laneHeight + laneHeight / 2f;
+            int row = laneRows[i];
 
-            drawJetSki(canvas, x, y, playerBitmaps[i], spriteHeight);
+            float x = startX + player.getProgress() * (finishX - startX);
+            float y = waterTop + row * laneHeight + laneHeight / 2f;
+
+            drawJetSki(canvas, x, y, playerBitmaps[i], spriteHeight, playerFallbackColors[i]);
 
             paint.setColor(Color.BLACK);
             paint.setTextSize(18);
@@ -149,7 +177,7 @@ public class GameView extends View {
             canvas.drawText(
                     "P" + player.getPlayerNumber() + ": " + player.getTapCount() + " taps",
                     10,
-                    waterTop + i * laneHeight + 20,
+                    waterTop + row * laneHeight + 20,
                     paint
             );
         }
@@ -160,10 +188,28 @@ public class GameView extends View {
             float x,
             float y,
             Bitmap bitmap,
-            int spriteHeight
+            int spriteHeight,
+            int fallbackColor
     ) {
 
         if (bitmap == null) {
+
+            // Fallback so a missing/broken image never makes a player invisible
+            paint.setColor(fallbackColor);
+            paint.setStyle(Paint.Style.FILL);
+
+            canvas.drawRoundRect(
+                    x - spriteHeight * 0.9f,
+                    y - spriteHeight / 2f,
+                    x + spriteHeight * 0.9f,
+                    y + spriteHeight / 2f,
+                    20f,
+                    20f,
+                    paint
+            );
+
+            paint.setStyle(Paint.Style.FILL);
+
             return;
         }
 
