@@ -1,16 +1,17 @@
 package com.kerbcorp.catchthatpig;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
 import java.util.ArrayList;
 import java.util.List;
-import android.app.Activity;
-import android.content.Intent;
 
 public class GameView extends SurfaceView implements Runnable {
 
@@ -152,7 +153,7 @@ public class GameView extends SurfaceView implements Runnable {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        Intent intent = new Intent(getContext(), CatchThatPigActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         getContext().startActivity(intent);
                         ((Activity) getContext()).finish();
@@ -474,7 +475,7 @@ public class GameView extends SurfaceView implements Runnable {
                         } else if (y > btnRestartTop && y < btnRestartTop + btnHeight) {
                             resetGame();
                         } else if (y > btnMenuTop && y < btnMenuTop + btnHeight) {
-                            Intent intent = new Intent(getContext(), MainActivity.class); // 👈 Replace MainActivity with your select player screen Activity name
+                            Intent intent = new Intent(getContext(), CatchThatPigActivity.class); // 👈 Replace MainActivity with your select player screen Activity name
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             getContext().startActivity(intent);
                             ((Activity) getContext()).finish();

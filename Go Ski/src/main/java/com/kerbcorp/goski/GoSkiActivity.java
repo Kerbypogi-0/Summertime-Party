@@ -1,5 +1,7 @@
 package com.kerbcorp.goski;
 
+import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.graphics.Color;
@@ -25,9 +27,13 @@ public class GoSkiActivity extends AppCompatActivity {
 
     private int numPlayers = 4;
 
+    private MediaPlayer bgmPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         showPlayerSelectScreen();
     }
@@ -43,15 +49,22 @@ public class GoSkiActivity extends AppCompatActivity {
         buttonColumn.setOrientation(LinearLayout.VERTICAL);
         buttonColumn.setGravity(Gravity.CENTER);
 
-        TextView title = new TextView(this);
+        android.widget.ImageView logoImage = new android.widget.ImageView(this);
 
-        title.setText("GO SKI");
-        title.setTextSize(50);
-        title.setTextColor(Color.WHITE);
-        title.setGravity(Gravity.CENTER);
-        title.setPadding(0, 0, 0, 80);
+        logoImage.setImageResource(R.drawable.go_ski_logo);
 
-        buttonColumn.addView(title);
+        LinearLayout.LayoutParams logoParams =
+                new LinearLayout.LayoutParams(
+                        600,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        logoParams.gravity = Gravity.CENTER;
+        logoParams.bottomMargin = 60;
+
+        logoImage.setAdjustViewBounds(true);
+
+        buttonColumn.addView(logoImage, logoParams);
 
         Button twoPlayerButton = new Button(this);
 
@@ -101,9 +114,12 @@ public class GoSkiActivity extends AppCompatActivity {
 
         mainLayout = new FrameLayout(this);
 
+        startBgm();
+
         gameView = new GameView(this, numPlayers);
 
         gameView.setOnRaceFinishedListener(winner -> {
+            fadeOutBgm();
             showPostRaceButtons();
         });
 
@@ -124,10 +140,23 @@ public class GoSkiActivity extends AppCompatActivity {
 
         mainLayout.addView(countdownText, countdownParams);
 
-        LinearLayout buttonLayout = new LinearLayout(this);
+        int margin = 30;
 
-        buttonLayout.setOrientation(LinearLayout.HORIZONTAL);
-        buttonLayout.setGravity(Gravity.CENTER);
+        int[] gravities;
+
+        if (numPlayers == 2) {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        } else {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.TOP | Gravity.END,
+                    Gravity.BOTTOM | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        }
 
         playerButtons = new Button[numPlayers];
 
@@ -139,22 +168,21 @@ public class GoSkiActivity extends AppCompatActivity {
 
             playerButtons[i] = button;
 
-            buttonLayout.addView(button);
+            FrameLayout.LayoutParams cornerParams =
+                    new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            cornerParams.gravity = gravities[i];
+            cornerParams.setMargins(margin, margin, margin, margin);
+
+            mainLayout.addView(button, cornerParams);
 
             button.setOnClickListener(v -> {
                 gameView.playerTap(playerNumber);
             });
         }
-
-        FrameLayout.LayoutParams buttonParams =
-                new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        140
-                );
-
-        buttonParams.gravity = Gravity.BOTTOM;
-
-        mainLayout.addView(buttonLayout, buttonParams);
 
         postRaceRow = new LinearLayout(this);
 
@@ -196,11 +224,13 @@ public class GoSkiActivity extends AppCompatActivity {
             postRaceRow.setVisibility(android.view.View.GONE);
             gameView.resetRace();
             setButtonsEnabled(false);
+            startBgm();
             startCountdown();
         });
 
         backToMenuButton.setOnClickListener(v -> {
             postRaceRow.setVisibility(android.view.View.GONE);
+            stopBgm();
             showPlayerSelectScreen();
         });
 
@@ -225,15 +255,6 @@ public class GoSkiActivity extends AppCompatActivity {
         button.setText(text);
         button.setTextSize(18);
         button.setTextColor(Color.BLACK);
-
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                );
-
-        button.setLayoutParams(params);
 
         return button;
     }
@@ -268,5 +289,133 @@ public class GoSkiActivity extends AppCompatActivity {
         handler.postDelayed(() -> {
             countdownText.setText("");
         }, 3700);
+    }
+
+    private void startBgm() {
+
+        if (bgmPlayer == null) {
+            bgmPlayer = MediaPlayer.create(this, R.raw.go_ski_bgm);
+
+            if (bgmPlayer != null) {
+                bgmPlayer.setLooping(true);
+            }
+        }
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.setVolume(0f, 0f);
+            bgmPlayer.start();
+            fadeInBgm();
+        }
+    }
+
+    private void fadeInBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 0f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] += 1f / steps;
+
+                if (volume[0] >= 1f) {
+                    bgmPlayer.setVolume(1f, 1f);
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    private void stopBgm() {
+
+        if (bgmPlayer != null) {
+            bgmPlayer.stop();
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
+    }
+
+    private void fadeOutBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 1f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] -= 1f / steps;
+
+                if (volume[0] <= 0f) {
+                    stopBgm();
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (bgmPlayer != null && bgmPlayer.isPlaying()) {
+            bgmPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (bgmPlayer != null) {
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
     }
 }

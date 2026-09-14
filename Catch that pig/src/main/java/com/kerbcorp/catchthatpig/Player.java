@@ -1,4 +1,5 @@
 package com.kerbcorp.catchthatpig;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import java.util.List;
@@ -36,7 +37,7 @@ public class Player {
         }
     }
 
-    public void update(com.crunch.catchthatpig.Joystick joystick, int screenWidth, int screenHeight, List<com.crunch.catchthatpig.Pig> pigs) {
+    public void update(Joystick joystick, int screenWidth, int screenHeight, List<Pig> pigs) {
         if (isAI) {
             // --- AI PATHFINDING LOGIC ---
             if (isCarryingPig) {
@@ -47,10 +48,10 @@ public class Player {
             } else {
                 // STATE 1: Not carrying a pig -> Search for the closest pig in the circle
                 if (pigs != null) {
-                    com.crunch.catchthatpig.Pig closestPig = null;
+                    Pig closestPig = null;
                     double shortestDistance = Double.MAX_VALUE;
 
-                    for (com.crunch.catchthatpig.Pig pig : pigs) {
+                    for (Pig pig : pigs) {
                         if (pig != null && !pig.isCaught) {
                             double dist = Math.hypot(positionX - pig.x, positionY - pig.y);
                             if (dist < shortestDistance) {
