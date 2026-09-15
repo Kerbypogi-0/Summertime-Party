@@ -1,37 +1,33 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#222222"
-    android:fillViewport="true">
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:background="#222222">
 
-
-    <LinearLayout
-        xmlns:tools="[http://schemas.android.com/tools](http://schemas.android.com/tools)"
-        tools:ignore="HardcodedText"
-        android:layout_width="match_parent"
+    <!-- Bold Arcade Title on the Left -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="CATCH PIGS"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:layout_marginEnd="50dp"/>
+
+    <!-- Selection and Button Stack on the Right -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:gravity="center">
 
-
-
-        <!-- Bold Arcade Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CATCH PIGS"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="20dp"/>
-
-        <!-- Black-styled Player Selection Box -->
+        <!-- Player Selection Box (Black background removed) -->
         <LinearLayout
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="#000000"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -94,13 +90,12 @@
         <Button
             android:id="@+id/btnStartGame"
             android:layout_width="300dp"
-            android:layout_height="70dp"
-            android:layout_marginTop="20dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="#000000"
             android:text="PLAY"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"/>
-
     </LinearLayout>
-</ScrollView>
+</LinearLayout>
