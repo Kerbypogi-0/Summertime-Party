@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cessbomb_bg_sand">#FFF3E0</color>
+    <color name="cessbomb_accent_red">#E53935</color>
+    <color name="cessbomb_accent_teal">#00ACC1</color>
+    <color name="cessbomb_accent_orange">#FB8C00</color>
+    <color name="cessbomb_text_dark">#3E2723</color>
+</resources>

@@ -29,24 +29,28 @@ public class MainActivity extends AppCompatActivity {
         // Setup Pig Button
         Button btnPig = findViewById(R.id.btnPig);
         btnPig.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, CatchThatPigActivity.class);
+            // This now correctly jumps to Catch That Pig
+            Intent intent = new Intent(MainActivity.this, com.kerbcorp.catchthatpig.CatchThatPigActivity.class);
             startActivity(intent);
         });
 
+        // Setup Go Ski Button
         Button btnGoSki = findViewById(R.id.btnGoSki);
-        btnPig.setOnClickListener(v -> {
+        btnGoSki.setOnClickListener(v -> { // FIXED: Was btnPig
             Intent intent = new Intent(MainActivity.this, GoSkiActivity.class);
             startActivity(intent);
         });
 
+        // Setup Cess Bomb Button
         Button btnCessBomb = findViewById(R.id.btnCessBomb);
-        btnPig.setOnClickListener(v -> {
+        btnCessBomb.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, CessBombActivity.class);
             startActivity(intent);
         });
 
+        // Setup Matching Game Button
         Button btnMatchingGame = findViewById(R.id.btnMatching);
-        btnPig.setOnClickListener(v -> {
+        btnMatchingGame.setOnClickListener(v -> { // FIXED: Was btnPig
             Intent intent = new Intent(MainActivity.this, MatchingGameActivity.class);
             startActivity(intent);
         });

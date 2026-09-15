@@ -1,5 +1,7 @@
 package com.kerbcorp.goski;
 
+import android.content.pm.ActivityInfo;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.graphics.Color;
@@ -14,27 +16,117 @@ import androidx.appcompat.app.AppCompatActivity;
 public class GoSkiActivity extends AppCompatActivity {
 
     private GameView gameView;
+    private FrameLayout mainLayout;
 
-    private Button player1Button;
-    private Button player2Button;
-    private Button player3Button;
-    private Button player4Button;
+    private Button[] playerButtons;
+    private Button playAgainButton;
+    private Button backToMenuButton;
+    private LinearLayout postRaceRow;
 
     private TextView countdownText;
+
+    private int numPlayers = 4;
+
+    private MediaPlayer bgmPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Create the main screen
-        FrameLayout mainLayout = new FrameLayout(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        // Create the game
-        gameView = new GameView(this);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+        showPlayerSelectScreen();
+    }
+
+    private void showPlayerSelectScreen() {
+
+        FrameLayout selectLayout = new FrameLayout(this);
+
+        selectLayout.setBackgroundColor(Color.rgb(50, 180, 220));
+
+        LinearLayout buttonColumn = new LinearLayout(this);
+
+        buttonColumn.setOrientation(LinearLayout.VERTICAL);
+        buttonColumn.setGravity(Gravity.CENTER);
+
+        android.widget.ImageView logoImage = new android.widget.ImageView(this);
+
+        logoImage.setImageResource(R.drawable.go_ski_logo);
+
+        LinearLayout.LayoutParams logoParams =
+                new LinearLayout.LayoutParams(
+                        600,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        logoParams.gravity = Gravity.CENTER;
+        logoParams.bottomMargin = 60;
+
+        logoImage.setAdjustViewBounds(true);
+
+        buttonColumn.addView(logoImage, logoParams);
+
+        Button twoPlayerButton = createButton("2 PLAYERS", Color.rgb(255, 140, 60));
+        twoPlayerButton.setTextSize(22);
+        twoPlayerButton.setMinHeight(120);
+
+        Button fourPlayerButton = createButton("4 PLAYERS", Color.rgb(60, 170, 200));
+        fourPlayerButton.setTextSize(22);
+        fourPlayerButton.setMinHeight(120);
+
+        LinearLayout.LayoutParams btnParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        btnParams.setMargins(80, 20, 80, 20);
+
+        buttonColumn.addView(twoPlayerButton, btnParams);
+        buttonColumn.addView(fourPlayerButton, btnParams);
+
+        FrameLayout.LayoutParams columnParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        columnParams.gravity = Gravity.CENTER;
+
+        selectLayout.addView(buttonColumn, columnParams);
+
+        setContentView(selectLayout);
+
+        twoPlayerButton.setOnClickListener(v -> {
+            numPlayers = 2;
+            startGameScreen();
+        });
+
+        fourPlayerButton.setOnClickListener(v -> {
+            numPlayers = 4;
+            startGameScreen();
+        });
+    }
+
+    private void startGameScreen() {
+
+        mainLayout = new FrameLayout(this);
+
+        startBgm();
+
+        gameView = new GameView(this, numPlayers);
+
+        gameView.setOnRaceFinishedListener(winner -> {
+            fadeOutBgm();
+            showPostRaceButtons();
+        });
 
         mainLayout.addView(gameView);
 
-        // Countdown text
         countdownText = new TextView(this);
 
         countdownText.setText("3");
@@ -48,138 +140,324 @@ public class GoSkiActivity extends AppCompatActivity {
                         FrameLayout.LayoutParams.MATCH_PARENT
                 );
 
-        mainLayout.addView(
-                countdownText,
-                countdownParams
-        );
+        mainLayout.addView(countdownText, countdownParams);
 
-        // Bottom button layout
-        LinearLayout buttonLayout = new LinearLayout(this);
+        int margin = 20;
 
-        buttonLayout.setOrientation(
-                LinearLayout.HORIZONTAL
-        );
+        int[] gravities;
 
-        buttonLayout.setGravity(Gravity.CENTER);
+        if (numPlayers == 2) {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        } else {
+            gravities = new int[] {
+                    Gravity.TOP | Gravity.START,
+                    Gravity.TOP | Gravity.END,
+                    Gravity.BOTTOM | Gravity.START,
+                    Gravity.BOTTOM | Gravity.END
+            };
+        }
 
-        // Player buttons
-        player1Button = createButton("P1\nTAP");
-        player2Button = createButton("P2\nTAP");
-        player3Button = createButton("P3\nTAP");
-        player4Button = createButton("P4\nTAP");
+        int[] playerColors = {
+                Color.rgb(230, 60, 60),
+                Color.rgb(60, 120, 230),
+                Color.rgb(70, 180, 90),
+                Color.rgb(230, 190, 40)
+        };
 
-        buttonLayout.addView(player1Button);
-        buttonLayout.addView(player2Button);
-        buttonLayout.addView(player3Button);
-        buttonLayout.addView(player4Button);
+        playerButtons = new Button[numPlayers];
 
-        FrameLayout.LayoutParams buttonParams =
-                new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.MATCH_PARENT,
-                        140
+        for (int i = 0; i < numPlayers; i++) {
+
+            final int playerNumber = i + 1;
+
+            Button button = createButton("P" + playerNumber + "\nTAP", playerColors[i]);
+
+            playerButtons[i] = button;
+
+            FrameLayout.LayoutParams cornerParams =
+                    new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT
+                    );
+
+            cornerParams.gravity = gravities[i];
+            cornerParams.setMargins(margin, margin, margin, margin);
+
+            mainLayout.addView(button, cornerParams);
+
+            button.setOnClickListener(v -> {
+                gameView.playerTap(playerNumber);
+            });
+        }
+
+        postRaceRow = new LinearLayout(this);
+
+        postRaceRow.setOrientation(LinearLayout.HORIZONTAL);
+        postRaceRow.setGravity(Gravity.CENTER);
+        postRaceRow.setVisibility(android.view.View.GONE);
+
+        playAgainButton = createButton("PLAY AGAIN", Color.rgb(70, 180, 90));
+        playAgainButton.setTextSize(18);
+
+        backToMenuButton = createButton("MAIN MENU", Color.rgb(150, 90, 200));
+        backToMenuButton.setTextSize(18);
+
+        LinearLayout.LayoutParams postRaceBtnParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
                 );
 
-        buttonParams.gravity = Gravity.BOTTOM;
+        postRaceBtnParams.setMargins(20, 0, 20, 0);
 
-        mainLayout.addView(
-                buttonLayout,
-                buttonParams
-        );
+        postRaceRow.addView(playAgainButton, postRaceBtnParams);
+        postRaceRow.addView(backToMenuButton, postRaceBtnParams);
 
-        // Set the screen
+        FrameLayout.LayoutParams postRaceRowParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT
+                );
+
+        postRaceRowParams.gravity = Gravity.CENTER;
+        postRaceRowParams.topMargin = 250;
+
+        mainLayout.addView(postRaceRow, postRaceRowParams);
+
+        playAgainButton.setOnClickListener(v -> {
+            postRaceRow.setVisibility(android.view.View.GONE);
+            gameView.resetRace();
+            setButtonsEnabled(false);
+            startBgm();
+            startCountdown();
+        });
+
+        backToMenuButton.setOnClickListener(v -> {
+            postRaceRow.setVisibility(android.view.View.GONE);
+            stopBgm();
+            showPlayerSelectScreen();
+        });
+
         setContentView(mainLayout);
 
-        // Disable buttons before GO
         setButtonsEnabled(false);
 
-        // Player 1
-        player1Button.setOnClickListener(v -> {
-            gameView.playerTap(1);
-        });
-
-        // Player 2
-        player2Button.setOnClickListener(v -> {
-            gameView.playerTap(2);
-        });
-
-        // Player 3
-        player3Button.setOnClickListener(v -> {
-            gameView.playerTap(3);
-        });
-
-        // Player 4
-        player4Button.setOnClickListener(v -> {
-            gameView.playerTap(4);
-        });
-
-        // Start countdown
         startCountdown();
     }
 
-    private Button createButton(String text) {
+    private void showPostRaceButtons() {
+
+        setButtonsEnabled(false);
+
+        postRaceRow.setVisibility(android.view.View.VISIBLE);
+    }
+
+    private Button createButton(String text, int color) {
 
         Button button = new Button(this);
 
         button.setText(text);
-        button.setTextSize(18);
-        button.setTextColor(Color.BLACK);
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setTypeface(button.getTypeface(), android.graphics.Typeface.BOLD);
 
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        1
-                );
+        android.graphics.drawable.GradientDrawable shape =
+                new android.graphics.drawable.GradientDrawable();
 
-        button.setLayoutParams(params);
+        shape.setShape(android.graphics.drawable.GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(26f);
+        shape.setColor(color);
+        shape.setStroke(6, darkenColor(color, 0.6f));
+        shape.setAlpha(230);
+
+        button.setBackground(shape);
+
+        button.setMinWidth(130);
+        button.setMinHeight(110);
+
+        button.setPadding(10, 10, 10, 10);
+
+        button.setElevation(8f);
 
         return button;
     }
 
+    private int darkenColor(int color, float factor) {
+
+        int a = Color.alpha(color);
+        int r = Math.round(Color.red(color) * factor);
+        int g = Math.round(Color.green(color) * factor);
+        int b = Math.round(Color.blue(color) * factor);
+
+        return Color.argb(
+                a,
+                Math.min(r, 255),
+                Math.min(g, 255),
+                Math.min(b, 255)
+        );
+    }
+
     private void setButtonsEnabled(boolean enabled) {
 
-        player1Button.setEnabled(enabled);
-        player2Button.setEnabled(enabled);
-        player3Button.setEnabled(enabled);
-        player4Button.setEnabled(enabled);
+        for (Button button : playerButtons) {
+            button.setEnabled(enabled);
+        }
     }
 
     private void startCountdown() {
 
         Handler handler = new Handler();
 
-        // 3
         countdownText.setText("3");
 
         handler.postDelayed(() -> {
-
             countdownText.setText("2");
-
         }, 1000);
 
-        // 1
         handler.postDelayed(() -> {
-
             countdownText.setText("1");
-
         }, 2000);
 
-        // GO
         handler.postDelayed(() -> {
-
             countdownText.setText("GO!");
-
             gameView.startRace();
-
             setButtonsEnabled(true);
-
         }, 3000);
 
-        // Remove GO text
         handler.postDelayed(() -> {
-
             countdownText.setText("");
-
         }, 3700);
+    }
+
+    private void startBgm() {
+
+        if (bgmPlayer == null) {
+            bgmPlayer = MediaPlayer.create(this, R.raw.go_ski_bgm);
+
+            if (bgmPlayer != null) {
+                bgmPlayer.setLooping(true);
+            }
+        }
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.setVolume(0f, 0f);
+            bgmPlayer.start();
+            fadeInBgm();
+        }
+    }
+
+    private void fadeInBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 0f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] += 1f / steps;
+
+                if (volume[0] >= 1f) {
+                    bgmPlayer.setVolume(1f, 1f);
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    private void stopBgm() {
+
+        if (bgmPlayer != null) {
+            bgmPlayer.stop();
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
+    }
+
+    private void fadeOutBgm() {
+
+        if (bgmPlayer == null) {
+            return;
+        }
+
+        final int fadeDurationMs = 1500;
+        final int steps = 15;
+        final int stepDelayMs = fadeDurationMs / steps;
+
+        final Handler fadeHandler = new Handler();
+        final float[] volume = { 1f };
+
+        Runnable fadeStep = new Runnable() {
+            @Override
+            public void run() {
+
+                if (bgmPlayer == null) {
+                    return;
+                }
+
+                volume[0] -= 1f / steps;
+
+                if (volume[0] <= 0f) {
+                    stopBgm();
+                    return;
+                }
+
+                bgmPlayer.setVolume(volume[0], volume[0]);
+
+                fadeHandler.postDelayed(this, stepDelayMs);
+            }
+        };
+
+        fadeHandler.post(fadeStep);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (bgmPlayer != null && bgmPlayer.isPlaying()) {
+            bgmPlayer.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (bgmPlayer != null && !bgmPlayer.isPlaying()) {
+            bgmPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (bgmPlayer != null) {
+            bgmPlayer.release();
+            bgmPlayer = null;
+        }
     }
 }

@@ -1,201 +1,183 @@
 package com.kerbcorp.goski;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class GameView extends View {
 
-    private final Paint paint;
+    private Paint paint;
 
-    private final GoSkiPlayer[] players;
+    private GoSkiPlayer[] players;
+
+    private int numPlayers;
 
     private boolean raceStarted = false;
     private boolean raceFinished = false;
 
     private int winner = 0;
 
-    private final int[] playerColors = {
-            Color.RED,
-            Color.BLUE,
-            Color.GREEN,
-            Color.YELLOW
+    // Bitmaps
+    private Bitmap trackBitmap;
+    private Bitmap logoBitmap;
+    private Bitmap[] playerBitmaps;
+
+    // Confetti
+    private List<Confetti> confettiList = new ArrayList<>();
+    private Random random = new Random();
+    private long lastFrameTime = 0;
+
+    private int[] confettiColors = {
+            Color.rgb(255, 87, 87),
+            Color.rgb(255, 205, 60),
+            Color.rgb(90, 200, 130),
+            Color.rgb(90, 160, 255),
+            Color.rgb(200, 120, 255)
     };
 
-    public GameView(Context context) {
+    private int[] playerFallbackColors = {
+            Color.rgb(230, 60, 60),
+            Color.rgb(60, 120, 230),
+            Color.rgb(70, 180, 90),
+            Color.rgb(230, 190, 40)
+    };
+
+    public interface OnRaceFinishedListener {
+        void onRaceFinished(int winner);
+    }
+
+    private OnRaceFinishedListener finishListener;
+
+    public void setOnRaceFinishedListener(OnRaceFinishedListener listener) {
+        this.finishListener = listener;
+    }
+
+    public GameView(Context context, int numPlayers) {
 
         super(context);
+
+        this.numPlayers = numPlayers;
 
         paint = new Paint(
                 Paint.ANTI_ALIAS_FLAG
         );
 
-        players = new GoSkiPlayer[] {
+        players = new GoSkiPlayer[numPlayers];
 
-                new GoSkiPlayer(1),
+        for (int i = 0; i < numPlayers; i++) {
+            players[i] = new GoSkiPlayer(i + 1);
+        }
 
-                new GoSkiPlayer(2),
+        trackBitmap = BitmapFactory.decodeResource(
+                getResources(),
+                R.drawable.go_ski_track
+        );
 
-                new GoSkiPlayer(3),
+        logoBitmap = BitmapFactory.decodeResource(
+                getResources(),
+                R.drawable.go_ski_logo
+        );
 
-                new GoSkiPlayer(4)
+        playerBitmaps = new Bitmap[] {
+                BitmapFactory.decodeResource(getResources(), R.drawable.player1_red),
+                BitmapFactory.decodeResource(getResources(), R.drawable.player2_blue),
+                BitmapFactory.decodeResource(getResources(), R.drawable.player3_green),
+                BitmapFactory.decodeResource(getResources(), R.drawable.player4_yellow)
         };
+
+        for (int i = 0; i < playerBitmaps.length; i++) {
+            if (playerBitmaps[i] == null) {
+                Log.e("GoSki", "Player " + (i + 1) + " bitmap failed to load — check the drawable filename/format.");
+            }
+        }
     }
 
     @Override
-    protected void onDraw(@androidx.annotation.NonNull Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
 
         super.onDraw(canvas);
 
-        // Draw water
-        canvas.drawColor(
-                Color.rgb(50, 180, 220)
-        );
+        if (trackBitmap != null) {
+            Rect destRect = new Rect(0, 0, getWidth(), getHeight());
+            canvas.drawBitmap(trackBitmap, null, destRect, paint);
+        } else {
+            canvas.drawColor(Color.rgb(50, 180, 220));
+        }
 
-        // Draw track
-        drawTrack(canvas);
-
-        // Draw players
+        drawTrackOverlay(canvas);
         drawPlayers(canvas);
 
-        // Draw winner
         if (raceFinished) {
-
-            drawWinner(
-                    canvas,
-                    winner
-            );
+            updateConfetti();
+            drawWinner(canvas, winner);
+            invalidate();
         }
     }
 
-    private void drawTrack(Canvas canvas) {
+    private void drawTrackOverlay(Canvas canvas) {
 
-        float laneHeight =
-                getHeight() / 5f;
-
-        // Race lanes
-        paint.setColor(
-                Color.rgb(225, 245, 245)
-        );
-
-        paint.setStyle(
-                Paint.Style.FILL
-        );
-
-        for (int i = 0; i < 4; i++) {
-
-            float top =
-                    i * laneHeight;
-
-            canvas.drawRect(
-                    0,
-                    top,
-                    getWidth(),
-                    top + laneHeight,
-                    paint
-            );
-        }
-
-        // Lane lines
-        paint.setColor(
-                Color.rgb(150, 200, 205)
-        );
-
-        paint.setStrokeWidth(4);
-
-        for (int i = 1; i < 4; i++) {
-
-            float y =
-                    i * laneHeight;
-
-            canvas.drawLine(
-                    0,
-                    y,
-                    getWidth(),
-                    y,
-                    paint
-            );
-        }
-
-        // Finish line
-        float finishX =
-                getWidth() - 100;
-
-        paint.setColor(Color.BLACK);
-
-        paint.setStrokeWidth(8);
-
-        canvas.drawLine(
-                finishX,
-                0,
-                finishX,
-                getHeight(),
-                paint
-        );
-        // Finish text
-        paint.setColor(Color.BLACK);
-
-        paint.setTextSize(25);
-
-        paint.setTextAlign(
-                Paint.Align.CENTER
-        );
-
-        canvas.drawText(
-                "FINISH",
-                finishX,
-                35,
-                paint
-        );
+        // The track image already includes lane dividers and a FINISH flag,
+        // so we no longer draw our own overlay lines here.
     }
 
     private void drawPlayers(Canvas canvas) {
 
-        float laneHeight =
-                getHeight() / 5f;
+        float waterTop = getHeight() * 0.34f;
+        float waterBottom = getHeight() * 0.90f;
+        float waterHeight = waterBottom - waterTop;
 
-        for (int i = 0; i < 4; i++) {
+        // The track art always has 4 painted lanes, so keep lane height fixed
+        // regardless of player count, and just choose which lanes are used.
+        float laneHeight = waterHeight / 4f;
 
-            GoSkiPlayer player =
-                    players[i];
+        int[] laneRows;
 
-            float x =
-                    70 +
-                            player.getProgress()
-                                    * (getWidth() - 190);
+        if (numPlayers == 2) {
+            // Use the middle two lanes so 2-player mode lines up with real stripes
+            laneRows = new int[] { 1, 2 };
+        } else {
+            laneRows = new int[] { 0, 1, 2, 3 };
+        }
 
-            float y =
-                    i * laneHeight
-                            + laneHeight / 2f;
+        float sizeFactor = (numPlayers == 2) ? 1.3f : 0.85f;
 
-            drawJetSki(
-                    canvas,
-                    x,
-                    y,
-                    playerColors[i],
-                    player.getPlayerNumber()
-            );
+        int spriteHeight = (int) (laneHeight * sizeFactor);
 
-            // Tap count
+        // Proportional to width so this clears the dock artwork on any screen size
+        float startX = getWidth() * 0.17f;
+
+        // Calibrate this to where the FINISH flag graphic sits in your track image
+        float finishX = getWidth() * 0.88f;
+
+        for (int i = 0; i < numPlayers; i++) {
+
+            GoSkiPlayer player = players[i];
+
+            int row = laneRows[i];
+
+            float x = startX + player.getProgress() * (finishX - startX);
+            float y = waterTop + row * laneHeight + laneHeight / 2f;
+
+            drawJetSki(canvas, x, y, playerBitmaps[i], spriteHeight, playerFallbackColors[i]);
+
             paint.setColor(Color.BLACK);
-
             paint.setTextSize(18);
-
-            paint.setTextAlign(
-                    Paint.Align.LEFT
-            );
+            paint.setTextAlign(Paint.Align.LEFT);
 
             canvas.drawText(
-                    "P" +
-                            player.getPlayerNumber() +
-                            ": " +
-                            player.getTapCount() +
-                            " taps",
+                    "P" + player.getPlayerNumber() + ": " + player.getTapCount() + " taps",
                     10,
-                    i * laneHeight + 25,
+                    waterTop + row * laneHeight + 20,
                     paint
             );
         }
@@ -205,184 +187,210 @@ public class GameView extends View {
             Canvas canvas,
             float x,
             float y,
-            int color,
-            int playerNumber
+            Bitmap bitmap,
+            int spriteHeight,
+            int fallbackColor
     ) {
 
-        // Jet ski
-        paint.setColor(color);
+        if (bitmap == null) {
 
-        paint.setStyle(
-                Paint.Style.FILL
+            // Fallback so a missing/broken image never makes a player invisible
+            paint.setColor(fallbackColor);
+            paint.setStyle(Paint.Style.FILL);
+
+            canvas.drawRoundRect(
+                    x - spriteHeight * 0.9f,
+                    y - spriteHeight / 2f,
+                    x + spriteHeight * 0.9f,
+                    y + spriteHeight / 2f,
+                    20f,
+                    20f,
+                    paint
+            );
+
+            paint.setStyle(Paint.Style.FILL);
+
+            return;
+        }
+
+        float aspect = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+        int spriteWidth = (int) (spriteHeight * aspect);
+
+        Rect destRect = new Rect(
+                (int) (x - spriteWidth / 2f),
+                (int) (y - spriteHeight / 2f),
+                (int) (x + spriteWidth / 2f),
+                (int) (y + spriteHeight / 2f)
         );
 
-        RectF body =
-                new RectF(
-                        x - 30,
-                        y - 15,
-                        x + 35,
-                        y + 15
-                );
+        canvas.drawBitmap(bitmap, null, destRect, paint);
+    }
 
-        canvas.drawRoundRect(
-                body,
-                15,
-                15,
-                paint
-        );
+    private void drawLogo(Canvas canvas) {
 
-        // Rider
-        paint.setColor(
-                Color.DKGRAY
-        );
+        int logoWidth = getWidth() / 2;
+        float aspect = (float) logoBitmap.getWidth() / (float) logoBitmap.getHeight();
+        int logoHeight = (int) (logoWidth / aspect);
 
-        canvas.drawCircle(
-                x,
-                y - 22,
-                9,
-                paint
-        );
+        int left = (getWidth() - logoWidth) / 2;
+        int top = (getHeight() - logoHeight) / 2;
 
-        // Player number
-        paint.setColor(Color.BLACK);
+        Rect destRect = new Rect(left, top, left + logoWidth, top + logoHeight);
 
-        paint.setTextSize(18);
-
-        paint.setTextAlign(
-                Paint.Align.CENTER
-        );
-
-        canvas.drawText(
-                String.valueOf(playerNumber),
-                x,
-                y + 7,
-                paint
-        );
-
-        // Water splash
-        paint.setColor(Color.WHITE);
-
-        canvas.drawCircle(
-                x - 40,
-                y,
-                5,
-                paint
-        );
-
-        canvas.drawCircle(
-                x - 50,
-                y - 8,
-                3,
-                paint
-        );
-
-        canvas.drawCircle(
-                x - 50,
-                y + 8,
-                3,
-                paint
-        );
+        canvas.drawBitmap(logoBitmap, null, destRect, paint);
     }
 
     public void startRace() {
 
         raceStarted = true;
-
         raceFinished = false;
-
         winner = 0;
+        confettiList.clear();
 
         invalidate();
     }
 
-    public void playerTap(
-            int playerNumber
-    ) {
+    public void playerTap(int playerNumber) {
 
-        // Don't allow tapping before GO
         if (!raceStarted) {
             return;
         }
 
-        // Don't allow tapping after race
         if (raceFinished) {
             return;
         }
 
-        GoSkiPlayer player =
-                players[playerNumber - 1];
+        if (playerNumber < 1 || playerNumber > numPlayers) {
+            return;
+        }
+
+        GoSkiPlayer player = players[playerNumber - 1];
 
         player.tap();
 
-        // Check if player reached finish
         if (player.isFinished()) {
 
-            winner =
-                    player.getPlayerNumber();
-
+            winner = player.getPlayerNumber();
             raceFinished = true;
+
+            spawnConfetti();
+
+            if (finishListener != null) {
+                finishListener.onRaceFinished(winner);
+            }
         }
 
         invalidate();
     }
 
-    private void drawWinner(
-            Canvas canvas,
-            int winner
-    ) {
+    private void spawnConfetti() {
 
-        // Dark transparent overlay
-        paint.setColor(
-                Color.argb(
-                        180,
-                        0,
-                        0,
-                        0
-                )
-        );
+        confettiList.clear();
 
-        canvas.drawRect(
-                0,
-                0,
-                getWidth(),
-                getHeight(),
-                paint
-        );
+        lastFrameTime = System.currentTimeMillis();
+
+        for (int i = 0; i < 60; i++) {
+
+            Confetti c = new Confetti();
+
+            c.x = random.nextFloat() * getWidth();
+            c.y = -random.nextFloat() * getHeight();
+            c.speed = 150 + random.nextFloat() * 250;
+            c.size = 8 + random.nextFloat() * 10;
+            c.color = confettiColors[random.nextInt(confettiColors.length)];
+            c.drift = (random.nextFloat() - 0.5f) * 80;
+
+            confettiList.add(c);
+        }
+    }
+
+    private void updateConfetti() {
+
+        long now = System.currentTimeMillis();
+
+        float dt = (now - lastFrameTime) / 1000f;
+
+        lastFrameTime = now;
+
+        for (Confetti c : confettiList) {
+
+            c.y += c.speed * dt;
+            c.x += c.drift * dt;
+
+            if (c.y > getHeight()) {
+                c.y = -20;
+                c.x = random.nextFloat() * getWidth();
+            }
+        }
+    }
+
+    private void drawWinner(Canvas canvas, int winner) {
+
+        paint.setColor(Color.argb(170, 0, 0, 0));
+        canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+
+        for (Confetti c : confettiList) {
+            paint.setColor(c.color);
+            canvas.drawRect(c.x, c.y, c.x + c.size, c.y + c.size, paint);
+        }
+
+        float centerX = getWidth() / 2f;
+        float centerY = getHeight() / 2f;
+
+        paint.setColor(playerBadgeColor(winner));
+        canvas.drawCircle(centerX, centerY - 80, 60, paint);
 
         paint.setColor(Color.WHITE);
-
-        paint.setTextAlign(
-                Paint.Align.CENTER
-        );
-
+        paint.setTextAlign(Paint.Align.CENTER);
         paint.setTextSize(50);
 
-        canvas.drawText(
-                "PLAYER " +
-                        winner +
-                        " WINS!",
-                getWidth() / 2f,
-                getHeight() / 2f,
-                paint
-        );
+        canvas.drawText("P" + winner, centerX, centerY - 65, paint);
+
+        paint.setColor(Color.rgb(255, 215, 0));
+        paint.setTextSize(45);
+
+        canvas.drawText("\u2605", centerX, centerY - 150, paint);
+
+        paint.setColor(Color.WHITE);
+        paint.setTextSize(48);
+
+        canvas.drawText("PLAYER " + winner + " WINS!", centerX, centerY + 30, paint);
+
+        paint.setColor(Color.rgb(230, 230, 230));
+        paint.setTextSize(22);
+
+        canvas.drawText("Great race!", centerX, centerY + 70, paint);
+    }
+
+    private int playerBadgeColor(int playerNumber) {
+
+        int[] colors = {
+                Color.rgb(230, 60, 60),
+                Color.rgb(60, 120, 230),
+                Color.rgb(70, 180, 90),
+                Color.rgb(230, 190, 40)
+        };
+
+        return colors[(playerNumber - 1) % colors.length];
     }
 
     public void resetRace() {
 
-        for (
-                GoSkiPlayer player :
-                players
-        ) {
-
+        for (GoSkiPlayer player : players) {
             player.reset();
         }
 
         raceStarted = false;
-
         raceFinished = false;
-
         winner = 0;
 
+        confettiList.clear();
+
         invalidate();
+    }
+
+    private static class Confetti {
+        float x, y, speed, size, drift;
+        int color;
     }
 }

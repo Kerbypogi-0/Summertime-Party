@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/cessbomb_bg_sand">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
+
+        <TextView
+            android:id="@+id/textResultBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="24dp" />
+
+        <TextView
+            android:id="@+id/textResultSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/textFinalScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/cessbomb_accent_red" />
+
+        <TextView
+            android:id="@+id/textDifficultyUsed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/textTimeRemaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textChallengesCompleted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/textBestScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/cessbomb_text_dark"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="32dp" />
+
+        <Button
+            android:id="@+id/playAgainButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cessbomb_play_again"
+            android:textColor="@android:color/white"
+            android:background="@drawable/cessbomb_button_bg"
+            android:padding="16dp"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/backToPartyButtonResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cessbomb_back_to_party"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/transparent"
+            android:textColor="@color/cessbomb_text_dark" />
+
+    </LinearLayout>
+
+    <!-- Confetti pieces are added here programmatically on a win -->
+    <FrameLayout
+        android:id="@+id/confettiContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false" />
+
+</FrameLayout>

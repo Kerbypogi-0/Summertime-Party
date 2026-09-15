@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Summertime Party</string>
+    <string name="back_button">← Back</string>
+    <string name="reset_game">Reset Game</string>
+    <string name="game_complete">🎉 Solved in %1$d moves!</string>
+    <string name="game_over">❌ Game Over! You used %1$d moves.</string>
+    <string name="game_stats">Moves: %1$d   Matches: %2$d/%3$d</string>
+</resources>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_beach">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:background="#33000000">
+
+        <TextView
+            android:id="@+id/textTimeLeft"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textChallengeProgress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/textScore"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="#FFD93D" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Button challenge -->
+        <LinearLayout
+            android:id="@+id/layoutButtonChallenge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textButtonPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#26333F"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <LinearLayout
+                android:id="@+id/buttonOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+        <!-- Wire challenge -->
+        <LinearLayout
+            android:id="@+id/layoutWireChallenge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textWirePrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#26333F"
+                android:gravity="center"
+                android:layout_marginBottom="24dp" />
+
+            <LinearLayout
+                android:id="@+id/wireOptionsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+        <!-- Code challenge -->
+        <LinearLayout
+            android:id="@+id/layoutCodeChallenge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textCodeEquation1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#26333F" />
+
+            <TextView
+                android:id="@+id/textCodeEquation2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:textColor="#26333F"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/textCodeQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#26333F"
+                android:layout_marginBottom="16dp" />
+
+            <EditText
+                android:id="@+id/inputCodeAnswer"
+                android:layout_width="160dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:digits="0123456789"
+                android:gravity="center"
+                android:background="#FFFFFF"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/submitCodeAnswer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUBMIT"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#2EC4B6" />
+
+        </LinearLayout>
+
+        <!-- Memory challenge -->
+        <LinearLayout
+            android:id="@+id/layoutMemoryChallenge"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/textMemoryPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#26333F"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/memorySequenceDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:id="@+id/memoryIconChoices"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="invisible" />
+
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/textMemoryPlayerInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:textColor="#26333F"
+                android:layout_marginBottom="16dp" />
+
+            <Button
+                android:id="@+id/clearMemoryInput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLEAR"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#E63946" />
+
+        </LinearLayout>
+
+        <!-- Final defuse -->
+        <LinearLayout
+            android:id="@+id/layoutFinalDefuse"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All challenges cleared!"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#26333F"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/btnDefuse"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:text="DEFUSE THE BOMB"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#2EC4B6" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
