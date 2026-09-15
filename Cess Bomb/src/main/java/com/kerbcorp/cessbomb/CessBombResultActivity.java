@@ -78,7 +78,7 @@ public class CessBombResultActivity extends AppCompatActivity {
         // Clears CessBomb's activity stack (intro + game) and returns to whatever
         // launched CessBomb: the SUMMERTIME PARTY main menu.
         backToPartyButton.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CessBombGameActivity.class);
+            Intent intent = new Intent(this, CessBombActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
