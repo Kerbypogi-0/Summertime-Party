@@ -61,7 +61,7 @@
             android:id="@+id/btnPig"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/catchpigslogo"
+            android:background="@drawable/catchpiglogo"
             app:backgroundTint="@null" />
     </LinearLayout>
 
