@@ -87,7 +87,7 @@ public class Player {
         double distance = Math.hypot(dx, dy);
 
         if (distance > 0) {
-            double aiSpeed = MAX_SPEED * 0.35;
+            double aiSpeed = MAX_SPEED * 0.40;
             positionX += (dx / distance) * aiSpeed;
             positionY += (dy / distance) * aiSpeed;
         }
