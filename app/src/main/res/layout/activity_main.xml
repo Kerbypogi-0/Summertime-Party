@@ -1,68 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="#121212">
+    android:background="@drawable/bg_arcade_gradient">
 
-    <!-- === NEW ARCADE HEADER === -->
+    <!-- === REFINED ARCADE HEADER === -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:layout_marginBottom="40dp">
+        android:layout_marginBottom="48dp">
 
-        <!-- Main Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SUMMERTIME PARTY"
             android:textColor="#FFFFFF"
-            android:textSize="32sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:letterSpacing="0.05" />
+            android:letterSpacing="0.1"
+            tools:ignore="HardcodedText" />
 
-        <!-- Neon Subtitle with LED Glow Effect -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5-IN-1 ARCADE COLLECTION"
-            android:textColor="#00E676"
-            android:textSize="14sp"
+            android:text="THE ULTIMATE COLLECTION"
+            android:textColor="#A78BFA"
+            android:textSize="12sp"
             android:textStyle="bold"
-            android:letterSpacing="0.2"
-            android:layout_marginTop="8dp"
-            android:shadowColor="#00E676"
-            android:shadowDx="0"
-            android:shadowDy="0"
-            android:shadowRadius="15"/>
+            android:letterSpacing="0.3"
+            android:layout_marginTop="6dp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
-    <!-- ========================= -->
 
     <!-- Row 1: Snake & Pig -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="24dp">
 
-        <Button
-            android:id="@+id/btnSnake"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/snakeandapplegamelogo"
-            app:backgroundTint="@null"
-            android:layout_marginEnd="20dp" />
+            android:layout_marginEnd="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
 
-        <Button
-            android:id="@+id/btnPig"
+            <Button
+                android:id="@+id/btnSnake"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/snakeandapplegamelogo"
+                app:backgroundTint="@null"
+                android:contentDescription="Snake and Apple Game" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/catchpigslogo"
-            app:backgroundTint="@null" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
+
+            <Button
+                android:id="@+id/btnPig"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/catchpigslogo"
+                app:backgroundTint="@null"
+                android:contentDescription="Catch That Pig Game" />
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
     <!-- Row 2: Go Ski & Cess Bomb -->
@@ -70,36 +84,63 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="24dp">
 
-        <Button
-            android:id="@+id/btnGoSki"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/go_ski_logo"
-            app:backgroundTint="@null" />
+            android:layout_marginEnd="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
 
-        <Button
-            android:id="@+id/btnCessBomb"
+            <Button
+                android:id="@+id/btnGoSki"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/go_ski_logo"
+                app:backgroundTint="@null"
+                android:contentDescription="Go Ski Game" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/logo_game"
-            app:backgroundTint="@null" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="0dp">
+
+            <Button
+                android:id="@+id/btnCessBomb"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/logo_game"
+                app:backgroundTint="@null"
+                android:contentDescription="Cess Bomb Game" />
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Row 3: Matching Game (Centered at the bottom) -->
+    <!-- Row 3: Matching Game (Centered) -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnMatching"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:background="@drawable/matchinggame"
-            app:backgroundTint="@null" />
+            app:cardCornerRadius="16dp"
+            app:cardElevation="12dp"
+            app:strokeWidth="0dp">
+
+            <Button
+                android:id="@+id/btnMatching"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/matching_game_tile"
+                app:backgroundTint="@null"
+                android:contentDescription="Matching Game" />
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
 </LinearLayout>
