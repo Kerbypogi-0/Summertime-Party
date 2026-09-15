@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
 }
 
 
@@ -10,7 +10,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.kerbcorp.matchinggame"
+
         minSdk = 30
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

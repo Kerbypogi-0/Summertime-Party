@@ -52,5 +52,6 @@ dependencies {
     implementation(project(":Go Ski"))
     implementation(project(":Matching Game"))
     implementation(project(":Cess Bomb"))
-
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-livedata:2.8.4")
 }
