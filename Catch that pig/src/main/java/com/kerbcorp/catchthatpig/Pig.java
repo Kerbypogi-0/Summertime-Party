@@ -1,5 +1,6 @@
 package com.kerbcorp.catchthatpig;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,8 +8,8 @@ import android.graphics.Paint;
 public class Pig {
     public float x;
     public float y;
-    private float radius = 15f;
-    private Paint paint;
+    private float radius = 30f;
+    private Bitmap sprite;
     public boolean isCaught = false;
 
     // --- NEW: Movement Variables ---
@@ -18,13 +19,10 @@ public class Pig {
 
     public android.graphics.RectF trappedBounds = null;
 
-    public Pig(float x, float y) {
+    public Pig(float x, float y, Bitmap sprite) {
         this.x = x;
         this.y = y;
-
-        paint = new Paint();
-        paint.setColor(Color.rgb(255, 182, 193));
-        paint.setStyle(Paint.Style.FILL);
+        this.sprite = sprite;
 
         // Give each pig a random starting direction
         double randomAngle = Math.random() * 2 * Math.PI;
@@ -82,11 +80,8 @@ public class Pig {
         }
     }
     public void draw(Canvas canvas) {
-        if (paint == null) {
-            paint = new Paint();
-            paint.setColor(Color.rgb(255, 182, 193));
-            paint.setStyle(Paint.Style.FILL);
+        if (sprite != null) {
+            canvas.drawBitmap(sprite, x - radius, y - radius, null);
         }
-        canvas.drawCircle(x, y, radius, paint);
     }
 }

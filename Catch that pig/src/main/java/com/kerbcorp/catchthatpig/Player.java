@@ -1,5 +1,6 @@
 package com.kerbcorp.catchthatpig;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import java.util.List;
@@ -9,6 +10,7 @@ public class Player {
     private double positionY;
     private double radius;
     private Paint paint;
+    private Bitmap sprite;
 
     private static final double MAX_SPEED = 12.0;
     private boolean isCarryingPig = false;
@@ -16,20 +18,22 @@ public class Player {
     private boolean isAI;
     private Cage homeCage;
 
-    public Player(double positionX, double positionY, double radius, int color, boolean isAI, Cage homeCage) {
+
+    public Player(double positionX, double positionY, double radius, Bitmap sprite, boolean isAI, Cage homeCage) {
         this.positionX = positionX;
         this.positionY = positionY;
         this.radius = radius;
         this.isAI = isAI;
         this.homeCage = homeCage;
 
+        this.sprite = sprite;
         paint = new Paint();
-        paint.setColor(color);
-        paint.setStyle(Paint.Style.FILL);
     }
 
     public void draw(Canvas canvas) {
-        canvas.drawCircle((float) positionX, (float) positionY, (float) radius, paint);
+        if (sprite != null) {
+            canvas.drawBitmap(sprite, (float) (positionX - radius), (float) (positionY - radius), null);
+        }
         if (isCarryingPig) {
             Paint pigPaint = new Paint();
             pigPaint.setColor(android.graphics.Color.rgb(255, 182, 193));

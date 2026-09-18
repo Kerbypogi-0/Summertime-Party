@@ -1,5 +1,7 @@
 package com.kerbcorp.catchthatpig;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +35,8 @@ public class GameView extends SurfaceView implements Runnable {
     private int arenaCenterX;
     private int arenaCenterY;
     private float arenaRadius;
+    private Bitmap arenaBmp;
+    private Bitmap pigBmp;
 
     // UI & End Game Variables
     private Paint uiBgPaint;
@@ -105,24 +109,41 @@ public class GameView extends SurfaceView implements Runnable {
         if (!p4_AI) joystick4 = new Joystick(marginX, marginY, joyBase, joyHat, Color.YELLOW);
 
         // 5. Players
+        // 5. Players
         int cx = screenWidth / 2;
         int cy = screenHeight / 2;
-        player1 = new Player(cx - 100, cy + 100, 50, Color.RED, p1_AI, cage1);
-        player2 = new Player(cx + 100, cy + 100, 50, Color.BLUE, p2_AI, cage2);
-        player3 = new Player(cx + 100, cy - 100, 50, Color.GREEN, p3_AI, cage3);
-        player4 = new Player(cx - 100, cy - 100, 50, Color.YELLOW, p4_AI, cage4);
+        int pSize = 100; // Radius (50) * 2 to fit exactly inside your previous circle size
 
-        // 6. Spawn 30 Pigs
+        Bitmap redBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.redplayer), pSize, pSize, false);
+        Bitmap blueBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.blueplayer), pSize, pSize, false);
+        Bitmap greenBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.greenplayer), pSize, pSize, false);
+        Bitmap yellowBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.yellowplayer), pSize, pSize, false);
+
+        player1 = new Player(cx - 100, cy + 100, 50, redBmp, p1_AI, cage1);
+        player2 = new Player(cx + 100, cy + 100, 50, blueBmp, p2_AI, cage2);
+        player3 = new Player(cx + 100, cy - 100, 50, greenBmp, p3_AI, cage3);
+        player4 = new Player(cx - 100, cy - 100, 50, yellowBmp, p4_AI, cage4);
+
+
+        // 6. Spawn 30 Pigs & Load Arena Image
         arenaCenterX = screenWidth / 2;
         arenaCenterY = screenHeight / 2;
-        arenaRadius = (screenHeight / 2f) - 50;
+        arenaRadius = (screenHeight / 2f) - 60;
+
+        int arenaDiameter = (int) (arenaRadius * 2);
+        Bitmap rawArena = BitmapFactory.decodeResource(getResources(), R.drawable.arenacenter);
+        arenaBmp = Bitmap.createScaledBitmap(rawArena, arenaDiameter, arenaDiameter, false);
+
+        int pigSize = 60; // Radius (15) * 2
+        Bitmap rawPig = BitmapFactory.decodeResource(getResources(), R.drawable.pinkpig);
+        pigBmp = Bitmap.createScaledBitmap(rawPig, pigSize, pigSize, false);
 
         for (int i = 0; i < 30; i++) {
             double angle = Math.random() * 2 * Math.PI;
             double r = Math.sqrt(Math.random()) * (arenaRadius - 20);
             float pigX = (float) (arenaCenterX + r * Math.cos(angle));
             float pigY = (float) (arenaCenterY + r * Math.sin(angle));
-            pigs.add(new Pig(pigX, pigY));
+            pigs.add(new Pig(pigX, pigY, pigBmp));
         }
 
         // 7. Start Loop Thread
@@ -314,7 +335,7 @@ public class GameView extends SurfaceView implements Runnable {
         for (int i = 0; i < 30; i++) {
             double angle = Math.random() * 2 * Math.PI;
             double r = Math.sqrt(Math.random()) * (arenaRadius - 20);
-            pigs.add(new Pig((float) (arenaCenterX + r * Math.cos(angle)), (float) (arenaCenterY + r * Math.sin(angle))));
+            pigs.add(new Pig((float) (arenaCenterX + r * Math.cos(angle)), (float) (arenaCenterY + r * Math.sin(angle)), pigBmp));
         }
 
         // Locking the size and shift exactly as requested
@@ -333,10 +354,16 @@ public class GameView extends SurfaceView implements Runnable {
         boolean p2_AI = (storedNumPlayers < 3);
         boolean p4_AI = (storedNumPlayers < 4);
 
-        player1 = new Player(arenaCenterX - 100, arenaCenterY + 100, 50, Color.RED, p1_AI, cage1);
-        player2 = new Player(arenaCenterX + 100, arenaCenterY + 100, 50, Color.BLUE, p2_AI, cage2);
-        player3 = new Player(arenaCenterX + 100, arenaCenterY - 100, 50, Color.GREEN, p3_AI, cage3);
-        player4 = new Player(arenaCenterX - 100, arenaCenterY - 100, 50, Color.YELLOW, p4_AI, cage4);
+        int pSize = 100;
+        Bitmap redBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.redplayer), pSize, pSize, false);
+        Bitmap blueBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.blueplayer), pSize, pSize, false);
+        Bitmap greenBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.greenplayer), pSize, pSize, false);
+        Bitmap yellowBmp = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.yellowplayer), pSize, pSize, false);
+
+        player1 = new Player(arenaCenterX - 100, arenaCenterY + 100, 50, redBmp, p1_AI, cage1);
+        player2 = new Player(arenaCenterX + 100, arenaCenterY + 100, 50, blueBmp, p2_AI, cage2);
+        player3 = new Player(arenaCenterX + 100, arenaCenterY - 100, 50, greenBmp, p3_AI, cage3);
+        player4 = new Player(arenaCenterX - 100, arenaCenterY - 100, 50, yellowBmp, p4_AI, cage4);
 
         timeLeft = 60;
         startTime = System.currentTimeMillis();
@@ -358,9 +385,10 @@ public class GameView extends SurfaceView implements Runnable {
             cage4.draw(canvas);
 
             // 3. Draw Arena Third (So it overlaps on top of the cages)
-            paint.setColor(Color.rgb(160, 82, 45));
-            paint.setStyle(Paint.Style.FILL);
-            canvas.drawCircle(arenaCenterX, arenaCenterY, arenaRadius, paint);
+            if (arenaBmp != null) {
+                // We subtract the radius to draw it exactly centered
+                canvas.drawBitmap(arenaBmp, arenaCenterX - arenaRadius, arenaCenterY - arenaRadius, null);
+            }
 
             // 4. Draw Pigs, Players
             for (Pig pig : pigs) pig.draw(canvas);
