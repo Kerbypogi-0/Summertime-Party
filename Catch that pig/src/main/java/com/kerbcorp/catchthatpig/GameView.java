@@ -37,6 +37,7 @@ public class GameView extends SurfaceView implements Runnable {
     private float arenaRadius;
     private Bitmap arenaBmp;
     private Bitmap pigBmp;
+    private Bitmap bgBmp;
 
     // UI & End Game Variables
     private Paint uiBgPaint;
@@ -82,15 +83,24 @@ public class GameView extends SurfaceView implements Runnable {
         textPaint.setTextAlign(Paint.Align.CENTER);
         startTime = System.currentTimeMillis();
 
+        // Load and scale the new background image
+        Bitmap rawBg = BitmapFactory.decodeResource(getResources(), R.drawable.background);
+        bgBmp = Bitmap.createScaledBitmap(rawBg, screenWidth, screenHeight, false);
+
         // 2. Cages
-        int cageSize = 340;
-        int shiftX = 125;
+        int cageSize = 500;
+        int shiftX = 300;
 
-        cage4 = new Cage(shiftX, 0, shiftX + cageSize, cageSize, Color.YELLOW);
-        cage3 = new Cage(screenWidth - shiftX - cageSize, 0, screenWidth - shiftX, cageSize, Color.GREEN);
+        Bitmap yCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.yellowcage), cageSize, cageSize, false);
+        Bitmap gCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.greencage), cageSize, cageSize, false);
+        Bitmap rCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.redcage), cageSize, cageSize, false);
+        Bitmap bCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bluecage), cageSize, cageSize, false);
 
-        cage1 = new Cage(shiftX, screenHeight - cageSize, shiftX + cageSize, screenHeight, Color.RED);
-        cage2 = new Cage(screenWidth - shiftX - cageSize, screenHeight - cageSize, screenWidth - shiftX, screenHeight, Color.BLUE);
+        cage4 = new Cage(shiftX, 0, shiftX + cageSize, cageSize, yCage);
+        cage3 = new Cage(screenWidth - shiftX - cageSize, 0, screenWidth - shiftX, cageSize, gCage);
+        cage1 = new Cage(shiftX, screenHeight - cageSize, shiftX + cageSize, screenHeight, rCage);
+        cage2 = new Cage(screenWidth - shiftX - cageSize, screenHeight - cageSize, screenWidth - shiftX, screenHeight, bCage);
+
         // 3. Multiplayer AI Logic
         boolean p1_AI = false;                  // Red is ALWAYS human
         boolean p3_AI = (numPlayers < 2);       // Green is Human if 2+ players
@@ -339,14 +349,20 @@ public class GameView extends SurfaceView implements Runnable {
         }
 
         // Locking the size and shift exactly as requested
-        int cageSize = 340;
-        int shiftX = 280;
-        int shiftX2  = 125;
+        // Locking the size and shift exactly as requested
+        int cageSize = 500;
+        int shiftX = 300;
+        int shiftX2  = 300;
 
-        cage4 = new Cage(shiftX2, 0, shiftX2 + cageSize, cageSize, Color.YELLOW);
-        cage3 = new Cage(screenWidth - shiftX2 - cageSize, 0, screenWidth - shiftX2, cageSize, Color.GREEN);
-        cage1 = new Cage(shiftX2, screenHeight - cageSize, shiftX2 + cageSize, screenHeight, Color.RED);
-        cage2 = new Cage(screenWidth - shiftX2 - cageSize, screenHeight - cageSize, screenWidth - shiftX2, screenHeight, Color.BLUE);
+        Bitmap yCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.yellowcage), cageSize, cageSize, false);
+        Bitmap gCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.greencage), cageSize, cageSize, false);
+        Bitmap rCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.redcage), cageSize, cageSize, false);
+        Bitmap bCage = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.bluecage), cageSize, cageSize, false);
+
+        cage4 = new Cage(shiftX2, 0, shiftX2 + cageSize, cageSize, yCage);
+        cage3 = new Cage(screenWidth - shiftX2 - cageSize, 0, screenWidth - shiftX2, cageSize, gCage);
+        cage1 = new Cage(shiftX2, screenHeight - cageSize, shiftX2 + cageSize, screenHeight, rCage);
+        cage2 = new Cage(screenWidth - shiftX2 - cageSize, screenHeight - cageSize, screenWidth - shiftX2, screenHeight, bCage);
 
         // Check how many players were selected to turn the rest into AI
         boolean p1_AI = false;
@@ -376,7 +392,9 @@ public class GameView extends SurfaceView implements Runnable {
             Canvas canvas = holder.lockCanvas();
 
             // 1. Draw Background First
-            canvas.drawColor(Color.rgb(124, 252, 0));
+            if (bgBmp != null) {
+                canvas.drawBitmap(bgBmp, 0, 0, null);
+            }
 
             // 2. Draw Cages Second (So they sit behind the arena)
             cage1.draw(canvas);
