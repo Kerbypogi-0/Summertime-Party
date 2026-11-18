@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 
@@ -15,6 +16,9 @@ import java.util.List;
 import java.util.Random;
 
 public class GameView extends View {
+
+    // Higher = snappier, lower = floatier (try 6 to 20)
+    private static final float SMOOTHING_SPEED = 10f;
 
     private Paint paint;
 
@@ -25,7 +29,15 @@ public class GameView extends View {
     private boolean raceStarted = false;
     private boolean raceFinished = false;
 
+    // A player has hit 100%, but their ski hasn't visually reached the line yet
+    private boolean finishPending = false;
+
     private int winner = 0;
+
+    // Smooth movement
+    private float[] displayedProgress;
+    private long lastAnimTime = 0;
+    private float animationTime = 0f;
 
     // Bitmaps
     private Bitmap trackBitmap;
@@ -73,6 +85,7 @@ public class GameView extends View {
         );
 
         players = new GoSkiPlayer[numPlayers];
+        displayedProgress = new float[numPlayers];
 
         for (int i = 0; i < numPlayers; i++) {
             players[i] = new GoSkiPlayer(i + 1);
@@ -107,6 +120,8 @@ public class GameView extends View {
 
         super.onDraw(canvas);
 
+        updateAnimation();
+
         if (trackBitmap != null) {
             Rect destRect = new Rect(0, 0, getWidth(), getHeight());
             canvas.drawBitmap(trackBitmap, null, destRect, paint);
@@ -117,10 +132,56 @@ public class GameView extends View {
         drawTrackOverlay(canvas);
         drawPlayers(canvas);
 
+        // Announce the win only once the winner's ski has visually reached the line
+        if (finishPending && displayedProgress[winner - 1] >= 0.995f) {
+
+            finishPending = false;
+            raceFinished = true;
+
+            spawnConfetti();
+
+            if (finishListener != null) {
+                finishListener.onRaceFinished(winner);
+            }
+        }
+
         if (raceFinished) {
             updateConfetti();
             drawWinner(canvas, winner);
             invalidate();
+        } else if (raceStarted) {
+            // Keep animating (smooth gliding + water bobbing) while racing
+            postInvalidateOnAnimation();
+        }
+    }
+
+    private void updateAnimation() {
+
+        long now = SystemClock.uptimeMillis();
+
+        if (lastAnimTime == 0) {
+            lastAnimTime = now;
+        }
+
+        // Clamp so a lag spike doesn't cause a sudden jump
+        float dt = Math.min((now - lastAnimTime) / 1000f, 0.05f);
+        lastAnimTime = now;
+
+        animationTime += dt;
+
+        // Frame-rate independent easing toward the real progress
+        float factor = 1f - (float) Math.exp(-SMOOTHING_SPEED * dt);
+
+        for (int i = 0; i < numPlayers; i++) {
+
+            float target = players[i].getProgress();
+
+            displayedProgress[i] += (target - displayedProgress[i]) * factor;
+
+            // Snap when very close so it fully settles
+            if (Math.abs(target - displayedProgress[i]) < 0.0005f) {
+                displayedProgress[i] = target;
+            }
         }
     }
 
@@ -165,11 +226,17 @@ public class GameView extends View {
 
             int row = laneRows[i];
 
-            float x = startX + player.getProgress() * (finishX - startX);
-            float y = waterTop + row * laneHeight + laneHeight / 2f;
+            // Use the smoothed progress for drawing
+            float x = startX + displayedProgress[i] * (finishX - startX);
+
+            // Gentle bobbing, offset per player so the skis don't move in sync
+            float bob = (float) Math.sin(animationTime * 4f + i * 1.5f) * (laneHeight * 0.04f);
+
+            float y = waterTop + row * laneHeight + laneHeight / 2f + bob;
 
             drawJetSki(canvas, x, y, playerBitmaps[i], spriteHeight, playerFallbackColors[i]);
 
+            // Label stays fixed (no bobbing)
             paint.setColor(Color.BLACK);
             paint.setTextSize(18);
             paint.setTextAlign(Paint.Align.LEFT);
@@ -244,7 +311,9 @@ public class GameView extends View {
 
         raceStarted = true;
         raceFinished = false;
+        finishPending = false;
         winner = 0;
+        lastAnimTime = 0;
         confettiList.clear();
 
         invalidate();
@@ -256,7 +325,7 @@ public class GameView extends View {
             return;
         }
 
-        if (raceFinished) {
+        if (raceFinished || finishPending) {
             return;
         }
 
@@ -269,15 +338,10 @@ public class GameView extends View {
         player.tap();
 
         if (player.isFinished()) {
-
+            // Don't show the winner screen yet; onDraw does that
+            // once the ski has glided to the finish line.
             winner = player.getPlayerNumber();
-            raceFinished = true;
-
-            spawnConfetti();
-
-            if (finishListener != null) {
-                finishListener.onRaceFinished(winner);
-            }
+            finishPending = true;
         }
 
         invalidate();
@@ -380,9 +444,15 @@ public class GameView extends View {
             player.reset();
         }
 
+        for (int i = 0; i < displayedProgress.length; i++) {
+            displayedProgress[i] = 0f;
+        }
+
         raceStarted = false;
         raceFinished = false;
+        finishPending = false;
         winner = 0;
+        lastAnimTime = 0;
 
         confettiList.clear();
 

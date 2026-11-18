@@ -15,6 +15,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class GoSkiActivity extends AppCompatActivity {
 
+    // Size of the round P-TAP buttons in dp
+    private static final int CIRCLE_BUTTON_DP = 110;
+
     private GameView gameView;
     private FrameLayout mainLayout;
 
@@ -169,19 +172,22 @@ public class GoSkiActivity extends AppCompatActivity {
 
         playerButtons = new Button[numPlayers];
 
+        int circlePx = dpToPx(CIRCLE_BUTTON_DP);
+
         for (int i = 0; i < numPlayers; i++) {
 
             final int playerNumber = i + 1;
 
-            Button button = createButton("P" + playerNumber + "\nTAP", playerColors[i]);
+            Button button = createCircleButton(
+                    "P" + playerNumber + "\nTAP",
+                    playerColors[i],
+                    CIRCLE_BUTTON_DP
+            );
 
             playerButtons[i] = button;
 
             FrameLayout.LayoutParams cornerParams =
-                    new FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT
-                    );
+                    new FrameLayout.LayoutParams(circlePx, circlePx);
 
             cornerParams.gravity = gravities[i];
             cornerParams.setMargins(margin, margin, margin, margin);
@@ -255,6 +261,15 @@ public class GoSkiActivity extends AppCompatActivity {
         postRaceRow.setVisibility(android.view.View.VISIBLE);
     }
 
+    private int dpToPx(int dp) {
+
+        return (int) android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                getResources().getDisplayMetrics()
+        );
+    }
+
     private Button createButton(String text, int color) {
 
         Button button = new Button(this);
@@ -286,6 +301,44 @@ public class GoSkiActivity extends AppCompatActivity {
         return button;
     }
 
+    private Button createCircleButton(String text, int color, int sizeDp) {
+
+        int sizePx = dpToPx(sizeDp);
+
+        Button button = new Button(this);
+
+        button.setText(text);
+        button.setTextSize(20);
+        button.setTextColor(Color.WHITE);
+        button.setAllCaps(false);
+        button.setTypeface(button.getTypeface(), android.graphics.Typeface.BOLD);
+        button.setGravity(Gravity.CENTER);
+
+        android.graphics.drawable.GradientDrawable shape =
+                new android.graphics.drawable.GradientDrawable();
+
+        shape.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+        shape.setColor(color);
+        shape.setStroke(6, darkenColor(color, 0.6f));
+        shape.setAlpha(230);
+
+        button.setBackground(shape);
+
+        // Must be 0, otherwise the default minimums stretch it into an oval
+        button.setMinWidth(0);
+        button.setMinHeight(0);
+        button.setMinimumWidth(0);
+        button.setMinimumHeight(0);
+
+        button.setPadding(0, 0, 0, 0);
+        button.setElevation(8f);
+
+        // Fixed, equal width and height = perfect circle
+        button.setLayoutParams(new FrameLayout.LayoutParams(sizePx, sizePx));
+
+        return button;
+    }
+
     private int darkenColor(int color, float factor) {
 
         int a = Color.alpha(color);
@@ -305,6 +358,7 @@ public class GoSkiActivity extends AppCompatActivity {
 
         for (Button button : playerButtons) {
             button.setEnabled(enabled);
+            button.setAlpha(enabled ? 1f : 0.5f);
         }
     }
 
